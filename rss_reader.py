@@ -20,18 +20,24 @@ def parse_rss_etree(file_path):
         
         #parcourt toutes les balises <item> qui représentent des articles pour les récupérer
         for item in channel.findall("item"):
+            id = item.find("guid").text 
+            source = file_path 
             #extrait le titre, ou met "No Title" si la balise est absente
-            title = item.find("title").text if item.find("title") is not None else "No Title"
+            title = item.find("title").text 
             #extrait la description, ou met "No Description" si la balise est absente
-            description = item.find("description").text if item.find("description") is not None else "No Description"
+            description = item.find("description").text  
             #extrait la date de publication, ou met "No Date" si la balise est absente
-            pub_date = item.find("pubDate").text if item.find("pubDate") is not None else "No Date"
+            pub_date = item.find("pubDate").text
+            category = item.findall("category") if item.findall("category") is not None else "[]"
 
             #ajoute l'article extrait sous forme de dictionnaire dans la liste
             articles.append({
+                "id": id,
+                "source": source,
                 "title": title,
                 "description": description,
                 "pub_date": pub_date,
+                "category": category
             })
 
         return articles  #retourne la liste des articles extraits
@@ -53,8 +59,12 @@ def main():
 
     #affiche les articles extraits
     for article in articles:
+        print(f"ID : {article['id']}")  #affiche id de l'article
+        print(f"Source : {article['source']}")  #affiche source de l'article
         print(f"Titre : {article['title']}")  #affiche titre de l'article
         print(f"Date : {article['pub_date']}")  #affiche date de publication
+        print(f"Description : {article['description']}")  #affiche titre de l'article
+        print(f"Category : {article['category']}")  #affiche category de l'article
         print("---")  #séparateur entre les articles
 
 #vérifie si le script est exécuté directement (et non importé comme module)
