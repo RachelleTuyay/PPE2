@@ -4,6 +4,8 @@
 import xml.etree.ElementTree as ET  #importe le module ElementTree pour analyser les fichiers XML
 import sys  #importe le module sys pour gérer les arguments de la ligne de commande
 
+
+
 def parse_rss_etree(file_path):
     try:
         #charge et analyse le fichier XML
@@ -25,10 +27,15 @@ def parse_rss_etree(file_path):
             #extrait le titre, ou met "No Title" si la balise est absente
             title = item.find("title").text 
             #extrait la description, ou met "No Description" si la balise est absente
-            description = item.find("description").text  
+            description = item.find("description").text #clean description-remove HTML tags et espaces
+            description = re.sub(r'<.*?>', '', description).strip() if description else "No Description" 
             #extrait la date de publication, ou met "No Date" si la balise est absente
             pub_date = item.find("pubDate").text
-            category = item.findall("category") if item.findall("category") is not None else "[]"
+            category = item.findall("category")  #obtenir tous les éléments <catégorie>
+            if category:  #s'il y a des catégories
+                category = ", ".join(cat.text for cat in category_elements)  #réunir en une chaîne
+            else:  # If no categories found
+                category = "No Category"
 
             #ajoute l'article extrait sous forme de dictionnaire dans la liste
             articles.append({
