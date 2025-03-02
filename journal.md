@@ -65,4 +65,14 @@ Ce fichier est censé contenir le code qui permet de lire un flux RSS avec diff�
 - J'ai ajouté et validé sur la branche main avec add, commit and push. Cependant, je n’ai pas pu bien tester le script car toutes les méthodes n’étaient pas encore implémentées.
 - J'ai fusionné ma branche JWr2 avec main
 
+### Merge avec main
+
+- Récupérer toutes les mises à jour depuis GitLab : git fetch origin
+- Mettre à jour la branche main locale en passant sur la branche main et récupérer les dernières modifications depuis le dépôt distant : checkout et pull
+- Mettre à jour la branche JW-s2 locale checkout et pull dernières mises à jour 
+- Fusionner JW-s2 dans main-les deux branches sont mises à jour checkout main et merge branche JW-s2 :
+- Gestion des conflits de fusion-Des conflits apparait Git demande de les résoudre manuellement.
+-Modifier, add et push la merge vers GitLab avec: git push origin main- met à jour la branche main distante avec les dernières modifications fusionnées
+
+
 ## JW-p-s3 Exo2 r2
