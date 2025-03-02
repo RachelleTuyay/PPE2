@@ -51,5 +51,21 @@ Category affichait une liste vide [] pour certains articles donc je voulais ajou
 - J'ai ajouté le tag finexo1 en ligne donc j'ai dû faire git pull --rebase origin JW-s2 puis j'ai poussé normalement
 - J'ai également ajouté la fonction main (je l'y ai ajouté directement) que nous avons écrite en classe pour gérer les trois fonctions r1, r2, et r3 dans la fonction main afin de pouvoir l'utiliser une fois que toutes les fonctions ont été ajoutées.
 
+### Ajout de la fonction de sélection de méthode RSS
+- Passage à la branche principale avec: git checkout main
+- Création du fichier rss_reader.py
+- Mais en exécutant la commande suivante, cela a écrasé le fichier RSS de ma branche individuelle : touch rss_reader.py 
+Ce fichier est censé contenir le code qui permet de lire un flux RSS avec différentes méthodes (re, etree et feedparser)
+
+- Ajout de la fonction nettoyer_texte(texte).
+J'ai aussi laissé le regex en commentaire pour référence.
+
+- Dans ma branche individuelle, j'ai dû modifier ma fonction pour utiliser nettoyer_texte() avant d'afficher la description.
+
+description = item.find("description").text
+description = nettoyer_texte(description) if description else "No Description"
+
+- J'ai ajouté et validé sur la branche main avec add, commit and push. Cependant, je n’ai pas pu bien tester le script car toutes les méthodes n’étaient pas encore implémentées.
+
 
 ## JW-p-s3 Exo2 r2
