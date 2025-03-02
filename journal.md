@@ -48,6 +48,7 @@ Category affichait une liste vide [] pour certains articles donc je voulais ajou
 5. Vérification des doublons : s’assurer qu’un même article ne soit pas affiché plusieurs fois
 
 - J'ai ajouté la tag -relu lorsque j'ai considéré que le code était terminé sur la base de l'exemple donné en classe
+- J'ai ajouté le tag finexo1 en ligne donc j'ai dû faire git pull --rebase origin JW-s2 puis j'ai poussé normalement
 - J'ai également ajouté la fonction main (je l'y ai ajouté directement) que nous avons écrite en classe pour gérer les trois fonctions r1, r2, et r3 dans la fonction main afin de pouvoir l'utiliser une fois que toutes les fonctions ont été ajoutées.
 
 
