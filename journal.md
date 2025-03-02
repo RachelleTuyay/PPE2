@@ -41,31 +41,28 @@ Category affichait une liste vide [] pour certains articles donc je voulais ajou
 - J'ai pris les corrections que nous avons faites en classe et j'ai amélioré ma fonction r2 en changeant la regex et en ajoutant la fonction nettoyer_texte que nous avons écrite en classe 
 - J'ai trouvé d'autres modifications à apporter :
 
-1. Correction des catégories : vérifier si elles sont présentes dans channel et les récupérer correctement
-2. Trier les catégories : s’assurer qu’elles apparaissent dans un ordre défini en utilisant sorted().
-3. Gestion des éléments manquants : si un élément n’existe pas, ajouter une valeur par défaut ("No Title", "No Category", etc.).
-4. Correction du titre : ajouter un else pour éviter que le titre ne retourne None lorsque la balise <title> est absente.
-5. Vérification des doublons : s’assurer qu’un même article ne soit pas affiché plusieurs fois
+1. Utilisation de Path() de pathlib pour gérer les chemins d'accès aux fichiers.
+2. Amélioration de l'extraction des catégories en incluant les catégories globales de <channel>.
+3. Ajouté la gestion des fichiers problématiques (flux.xml)
+4. Trier les catégories : s’assurer qu’elles apparaissent dans un ordre défini en utilisant sorted().
+5. Améliorer les vérifications pour les éléments manquants en utilisant explicitement is None.
+6. Utilisation d'une fonction nettoyage() cohérente pour le traitement du texte.
+7. Correction du titre : ajouter un else pour éviter que le titre ne retourne None lorsque la balise <title> est absente.
+8. Vérification des doublons : s’assurer qu’un même article ne soit pas affiché plusieurs fois
+9. Filtrage des articles : ne conserver que ceux qui respectent certains critères définis.
 
-- J'ai ajouté la tag -relu lorsque j'ai considéré que le code était terminé sur la base de l'exemple donné en classe
 - J'ai ajouté le tag finexo1 en ligne donc j'ai dû faire git pull --rebase origin JW-s2 puis j'ai poussé normalement
+- J'ai édité mon exo1 en ligne pour éviter les erreurs de conflit avec main
+- J'ai ajouté la tag -relu lorsque j'ai considéré que le code était terminé sur la base de l'exemple donné en classe
 - J'ai également ajouté la fonction main (je l'y ai ajouté directement) que nous avons écrite en classe pour gérer les trois fonctions r1, r2, et r3 dans la fonction main afin de pouvoir l'utiliser une fois que toutes les fonctions ont été ajoutées.
 
-### Ajout de la fonction de sélection de méthode RSS
+### Ajout de la fonction de sélection de méthode RSS dans branche main
 - Passage à la branche principale avec: git checkout main
 - Création du fichier rss_reader.py
 - Mais en exécutant la commande suivante, cela a écrasé le fichier RSS de ma branche individuelle : touch rss_reader.py 
 Ce fichier est censé contenir le code qui permet de lire un flux RSS avec différentes méthodes (re, etree et feedparser)
-
-- Ajout de la fonction nettoyer_texte(texte).
-J'ai aussi laissé le regex en commentaire pour référence.
-
-- Dans ma branche individuelle, j'ai dû modifier ma fonction pour utiliser nettoyer_texte() avant d'afficher la description.
-
-description = item.find("description").text
-description = nettoyer_texte(description) if description else "No Description"
-
+- Ajout de la fonction nettoyage(texte). J'ai aussi laissé le regex en commentaire pour référence
 - J'ai ajouté et validé sur la branche main avec add, commit and push. Cependant, je n’ai pas pu bien tester le script car toutes les méthodes n’étaient pas encore implémentées.
-
+- J'ai fusionné ma branche JWr2 avec main
 
 ## JW-p-s3 Exo2 r2
