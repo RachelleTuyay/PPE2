@@ -33,3 +33,5 @@ La sortie contenait du HTML brut avec br/, img, etc. donc il fallait l'utilisati
 Category affichait une liste vide [] pour certains articles donc je voulais ajouter d’une gestion pour afficher "No Category" si aucune catégorie n’est trouvée.
 
 - Finalisation et commit avec: git add rss_reader.py, commit et tag
+
+- J'ai vu qu'un journal avait été créé dans ma branche, je l'ai donc supprimé et le fichier flux sur lequel j'ai testé le script est apparu dans ma branche également, je l'ai donc supprimé aussi.
