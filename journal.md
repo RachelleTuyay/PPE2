@@ -38,4 +38,17 @@ Category affichait une liste vide [] pour certains articles donc je voulais ajou
 - J'ai vu qu'un journal avait été créé dans ma branche, je l'ai donc supprimé et le fichier flux sur lequel j'ai testé le script est apparu dans ma branche également, je l'ai donc supprimé aussi.
 - En attendant les membres de l'équipe, j'ai commencé les exercices suivants, en fusionnant ce premier exercice avec main (je ne savais pas si j'aurais dû continuer séparément sur ma propre branche ou si j'aurais dû continuer localement sans envoyer de mises à jour au référentiel en ligne)
 
+- J'ai pris les corrections que nous avons faites en classe et j'ai amélioré ma fonction r2 en changeant la regex et en ajoutant la fonction nettoyer_texte que nous avons écrite en classe 
+- J'ai trouvé d'autres modifications à apporter :
+
+1. Correction des catégories : vérifier si elles sont présentes dans channel et les récupérer correctement
+2. Trier les catégories : s’assurer qu’elles apparaissent dans un ordre défini en utilisant sorted().
+3. Gestion des éléments manquants : si un élément n’existe pas, ajouter une valeur par défaut ("No Title", "No Category", etc.).
+4. Correction du titre : ajouter un else pour éviter que le titre ne retourne None lorsque la balise <title> est absente.
+5. Vérification des doublons : s’assurer qu’un même article ne soit pas affiché plusieurs fois
+
+- J'ai ajouté la tag -relu lorsque j'ai considéré que le code était terminé sur la base de l'exemple donné en classe
+- J'ai également ajouté la fonction main que nous avons écrite en classe pour gérer les trois fonctions r1, r2, et r3 dans la fonction main afin de pouvoir l'utiliser une fois que toutes les fonctions ont été ajoutées.
+
+
 ## JW-p-s3 Exo2 r2
