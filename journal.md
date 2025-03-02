@@ -48,7 +48,7 @@ Category affichait une liste vide [] pour certains articles donc je voulais ajou
 5. Vérification des doublons : s’assurer qu’un même article ne soit pas affiché plusieurs fois
 
 - J'ai ajouté la tag -relu lorsque j'ai considéré que le code était terminé sur la base de l'exemple donné en classe
-- J'ai également ajouté la fonction main que nous avons écrite en classe pour gérer les trois fonctions r1, r2, et r3 dans la fonction main afin de pouvoir l'utiliser une fois que toutes les fonctions ont été ajoutées.
+- J'ai également ajouté la fonction main (je l'y ai ajouté directement) que nous avons écrite en classe pour gérer les trois fonctions r1, r2, et r3 dans la fonction main afin de pouvoir l'utiliser une fois que toutes les fonctions ont été ajoutées.
 
 
 ## JW-p-s3 Exo2 r2
