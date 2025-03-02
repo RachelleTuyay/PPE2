@@ -2,16 +2,16 @@ import argparse  #pour gérer les arguments en ligne de commande
 import re  #pour les expressions régulières
 
 #suppression de <![CDATA[...]]>
-# # texte_net = re.sub(r"<!\[CDATA\[(.+)\]\]>", r"\1", texte, flags=re.DOTALL)
-# 
-# # Suppression des balises HTML
-# # texte_net = re.sub(r"<[^>]+>", "", texte_net)
-# 
-# # Suppression des retours à la ligne
-# # texte_net = re.sub(r"\n", " ", texte_net)
-# 
-# # Suppression des espaces multiples
-# # texte_net = re.sub(r"\s+", " ", texte_net).strip()
+#texte_net = re.sub(r"<!\[CDATA\[(.+)\]\]>", r"\1", texte, flags=re.DOTALL)
+
+#suppression des balises HTML
+#texte_net = re.sub(r"<[^>]+>", "", texte_net)
+
+#suppression des retours à la ligne
+#texte_net = re.sub(r"\n", " ", texte_net)
+ 
+#suppression des espaces multiples
+#texte_net = re.sub(r"\s+", " ", texte_net).strip()
 
 ## Fonctions de lecture RSS avec différentes méthodes ##
 
