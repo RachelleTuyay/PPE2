@@ -1,6 +1,8 @@
 # Journal Group11
 
-## Semaine du 12/02 au 17/02
+# Semaine du 12/02 au 17/02 - Lecture de flux RSS
+## Exercice 1 Découverte du RSS
+
 ## JW-p-s3 Exo1 r2
 ### Téléchargement et configuration du corpus
 
@@ -74,5 +76,24 @@ Ce fichier est censé contenir le code qui permet de lire un flux RSS avec diff�
 - Gestion des conflits de fusion-Des conflits apparait Git demande de les résoudre manuellement.
 -Modifier, add et push la merge vers GitLab avec: git push origin main- met à jour la branche main distante avec les dernières modifications fusionnées
 
-
+## Exercice 2 - Lecture récursive des fichiers RSS
 ## JW-p-s3 Exo2 r2
+
+Je continue mon travail avant que mes coéquipiers aient ajouté leurs fonctions. Pour ne pas perturber d’éventuelles fusions futures avec l’Exercice 1, j’ai décidé de créer une nouvelle branche (comme cela a été dit en cours, nous pouvions en créer une pour chaque exercice).
+Cette fois-ci, j’ai bien respecté la convention de nommage en incluant s3 dans le nom de la branche.
+
+- Création d'une nouvelle branche pour Exercice 2-j’ai créé une nouvelle branche pour mon rôle R2.
+Commande: git checkout -b JW-s3e2r2
+
+- Ajout et modification du code:
+Une fois la branche créée, j’ai ultilisé les fonctions mis à jour depuis main et modifié le fichier rss_reader.py pour inclure la lecture récursive avec pathlib.glob() et les parties spécifiques à R2 et la fonction main().
+
+- Test du script avec dossier corpus:
+python rss_reader.py corpus/
+-Une fois les tests effectués et validés, j’ai enregistré mes modifications dans Git avec add, commit, push. Comme il s’agissait d’une nouvelle branche, push avec : git push --set-upstream origin JW-s3e2r2 et ajouté un tag 
+
+- Fusion dans la branche main
+j’ai fusionné ma branche JW-s3e2r2 dans la branche main avec checkout, merge, modifier, add, commit et push. Puis, j’ai ajouté le tag général de fin d’exercice pour l’équipe 
+
+## Jusqu'au 4 mars - Lecture et filtrage du corpus de flux RSS
+## JW-p-s4 Exo1 
