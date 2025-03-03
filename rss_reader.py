@@ -3,7 +3,7 @@ from pathlib import Path
 import sys  #importe le module sys pour gérer les arguments de la ligne de commande
 
 #R2#
-#ire et afficher tous les fichiers XML dans un dossier avec pathlib.glob()
+#lire et afficher tous les fichiers XML dans un dossier avec pathlib.glob()
 
 def arborescence_rss_etree(dossier):
     path = Path(dossier)
