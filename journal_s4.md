@@ -26,3 +26,6 @@ J’ai mis à jour ma branche locale avec les dernières modifications distantes
 - Modifier main() pour que l’utilisateur puisse spécifier les sources avec --sources, add, commit and push la branche vers GitLab avec git push --set-upstream origin JW-s4r2
 
 - Test
+
+- Je vais le vérifier une dernière fois, ajouter le tag relu et l'ajouter à la branche main avec merge
+
