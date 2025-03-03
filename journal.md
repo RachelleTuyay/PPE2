@@ -94,6 +94,3 @@ python rss_reader.py corpus/
 
 - Fusion dans la branche main
 j’ai fusionné ma branche JW-s3e2r2 dans la branche main avec checkout, merge, modifier, add, commit et push. Puis, j’ai ajouté le tag général de fin d’exercice pour l’équipe 
-
-## Jusqu'au 4 mars - Lecture et filtrage du corpus de flux RSS
-## JW-p-s4 Exo1 
