@@ -19,15 +19,6 @@ def nettoyage(texte):
     texte_net = texte_net.strip()
     return texte_net
 
-## Fonctions de lecture RSS avec différentes méthodes ##
-
-#fonction utilisant regex
-#R1#
-def rss_reader_re(filename):
-    print(f"Lecture RSS avec regex : {filename}")
-    return []
-
-#fonction utilisant etree
 #R2#
 #extrait les métadonnées en utilisant ElementTree
 
@@ -88,44 +79,40 @@ def rss_reader_etree(filename: str | Path) -> list[dict]:
 
     return articles  #retourne la liste des articles extraits
 
+#fonction qui parcourt récursivement le dossier avec pathlib.glob()
+def arborescence_rss_etree(dossier):
+    path = Path(dossier)
+    
+    if not path.exists():
+        print(f"Erreur : le dossier {dossier} n'existe pas.")
+        return
+    
+    #recherche de tous les fichiers XML dans l'arborescence
+    fichiers_xml = path.glob("**/*.xml")
+    
+    for fichier in fichiers_xml:
+        print(f"Lecture du fichier : {fichier}")
+        articles = rss_reader_etree(fichier)
+        
+        
+        #affichage des éléments récupérés
+        for article in items:
+            print(f"Titre : {article['title']}")
+            print(f"Date : {article['pub_date']}")
+            print(f"Description : {article['description']}")
+            print(f"Category : {', '.join(article['category'])}")  
+            #print(f"Category : {', '.join(list(article['category'])) if article['category'] else 'No Category'}" #set to list
+            print("---") 
 
-#fonction utilisant feedparser
-#R3#
-def rss_reader_feedparser(filename):
-    print(f"Lecture RSS avec feedparser : {filename}")
-    return []
-
-## Fonction principale ##
-
-#création de l'argument parser pour appeler méthode depuis bash
+#adaptation de main() pour accepter un dossier en argument
 def main():
-    parser = argparse.ArgumentParser(description="Lire un fichier RSS avec une méthode spécifiée")
-    #argument pour choisir la méthode de parsing RSS
-    parser.add_argument("methode", choices=["re", "etree", "feedparser"], help="Méthode de parsing RSS")
-     #argument pour indiquer le fichier RSS à lire
-    parser.add_argument("fichier_rss", help="Le fichier RSS d'entrée")
+    if len(sys.argv) != 2:
+        print("Utilisation : python rss_reader.py <chemin_du_dossier>")
+        sys.exit(1)
 
-#récupération des arguments passés en ligne de commande
-    args = parser.parse_args()
+    dossier = sys.argv[1]
+    arborescence_rss_etree(dossier)
 
- #appelle la fonction correspondant à la méthode choisie
-    if args.methode == "re":
-        items = rss_reader_re(args.fichier_rss)
-    elif args.methode == "etree":
-        items = rss_reader_etree(args.fichier_rss)
-    elif args.methode == "feedparser":
-        items = rss_reader_feedparser(args.fichier_rss)
-    else:
-        raise ValueError("Méthode inconnue")
-
-#affichage des éléments récupérés
-    for article in items:
-        print(f"Titre : {article['title']}")
-        print(f"Date : {article['pub_date']}")
-        print(f"Description : {article['description']}")
-        print(f"Category : {', '.join(article['category'])}")  
-        #print(f"Category : {', '.join(list(article['category'])) if article['category'] else 'No Category'}" #set to list
-        print("---")  
 
 #vérifie si le script est exécuté directement (et non importé comme module)
 if __name__ == "__main__":
