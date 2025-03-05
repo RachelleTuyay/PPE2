@@ -5,7 +5,7 @@ import re
 import xml.etree.ElementTree as ET
 import feedparser
 from pathlib import Path
-
+from datetime import datetime
 
 def lire_corpus_glob(dossier_entree) :
 		dir = Path(dossier_entree)
@@ -162,7 +162,26 @@ def run_method(method, lecture, dossier_entree):
 	return articles_total
 
 def filtre_date(item:dict, date_debut, date_fin):
-	pass
+    """
+    Filtrer les articles par date
+    """
+    # Analyser la date (si elle existe)
+    if item.get("date") != " ":
+        try:
+            date = datetime.strptime(item.get("date"), "%a, %d %b %Y %H:%M:%S %z").replace(tzinfo=None)
+        except ValueError:
+            date = None  # Si l'analyse échoue, définir sur None
+    
+    if date is None:  
+        return True  # Si aucune date, conserver par défaut (peut être changé en False pour exclure)
+
+    if date_debut and date < datetime.strptime(date_debut, "%Y-%m-%d"):
+        return False
+
+    if date_fin and date > datetime.strptime(date_fin, "%Y-%m-%d"):
+        return False
+    
+    return True
 
 def filtre_source(item:dict, sources:list) :
 	
@@ -200,6 +219,8 @@ def main():
 	parser.add_argument("dossier_entree", help="Dossier comprenant les fichiers XML d'entrée")
 	parser.add_argument("lecture", choices=["glob","os","path"], help="Choisir le module utilisé pour lire le dossier d'entrée")
 	parser.add_argument("method", choices=["regex", "etree", "feedparser"], help="Méthode d'extraction (r1, r2, r3)")
+	parser.add_argument("--start-date", help="Filtrer les articles publiés après cette date (format YYYY-MM-DD)")
+	parser.add_argument("--end-date", help="Filtrer les articles publiés avant cette date (format YYYY-MM-DD)")
 	parser.add_argument("--source", nargs="+", help="Filtrer par une ou plusieurs sources")
 	args = parser.parse_args()
 
@@ -211,6 +232,8 @@ def main():
 
 
 	filtres = []
+	if args.start_date or args.end_date:
+		filtres.append(lambda item: filtre_date(item, args.start_date, args.end_date))
 	if args.source :
 		filtres.append(lambda item: filtre_source(item, args.source))
 
