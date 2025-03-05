@@ -193,8 +193,18 @@ def filtre_source(item:dict, sources:list) :
 		else:
 			return False
 
-def filtre_categories(item:dict, categories) :
-	pass
+def filtre_categories(item:dict, categories:list) :
+	"""
+	filtrer les articles selon catégories
+	"""
+	if not categories:
+		return True
+	# On découpe le string du categorie par "," et le stoker dans une list
+	article_categories = item.get("categories")[0].split(", ")
+
+	if article_categories:
+		return any(cat in categories for cat in article_categories)
+	return False  # Si pas de catégories, on exclut par défaut
 
 def filtrage(filtres, articles):
 	articles_filtres = []
@@ -222,6 +232,7 @@ def main():
 	parser.add_argument("--start-date", help="Filtrer les articles publiés après cette date (format YYYY-MM-DD)")
 	parser.add_argument("--end-date", help="Filtrer les articles publiés avant cette date (format YYYY-MM-DD)")
 	parser.add_argument("--source", nargs="+", help="Filtrer par une ou plusieurs sources")
+	parser.add_argument("--categorie", nargs="+", help="Filtrer par une ou plisieurs catégories")
 	args = parser.parse_args()
 
 	if not os.path.isdir(args.dossier_entree):
@@ -232,11 +243,12 @@ def main():
 
 
 	filtres = []
-	if args.start_date or args.end_date:
+	if args.start_date or args.end_date :
 		filtres.append(lambda item: filtre_date(item, args.start_date, args.end_date))
 	if args.source :
 		filtres.append(lambda item: filtre_source(item, args.source))
-
+	if args.categorie :
+		filtres.append(lambda item: filtre_categories(item, args.categorie))
 
 	if filtres :
 		articles_filtres = filtrage(filtres, articles)
