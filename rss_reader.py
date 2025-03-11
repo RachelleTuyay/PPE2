@@ -127,37 +127,22 @@ def lire_rss_feedparser(xml_file):
 
 def run_method(method, lecture, dossier_entree):
 	"""Appelle la méthode sélectionnée avec le fichier XML"""
-	if lecture == "glob" :
-		xml_files = lire_corpus_glob(dossier_entree)
-	elif lecture == "os" :
-		xml_files = lire_corpus_os(dossier_entree)
-	elif lecture == "path" :
-		xml_files = lire_corpus_path(dossier_entree)
-	
-	articles_total = []
-	for file in xml_files :
-		if method == "regex":
-			try :
-				articles = lire_rss_regex(file)
-				articles_total.extend(articles)
-			except :
-				print(f"Impossible de traiter le fichier {file}, fichier XML mal formé")
-		elif method == "etree":
-			try :
-				articles = lire_rss_etree(file)
-				articles_total.extend(articles)
-			except :
-				print(f"Impossible de traiter le fichier {file}, fichier XML mal formé")
-		elif method == "feedparser":
-			try :
-				articles = lire_rss_feedparser(file)
-				articles_total.extend(articles)
-			except :
-				print(f"Impossible de traiter le fichier {file}, fichier XML mal formé")
 
-		else:
-			print("Erreur : Méthode invalide. Utilisez 'r1', 'r2' ou 'r3'.")
-			sys.exit(1)
+	lire_func = {"glob" : lire_corpus_glob, "os" : lire_corpus_os, "path" : lire_corpus_path}
+	xml_files = lire_func[lecture](dossier_entree)
+
+	method_func = {"regex" : lire_rss_regex, "etree" : lire_rss_etree, "feedparser" : lire_rss_feedparser}
+	if method not in method_func:
+		print("Erreur : Méthode invalide. Utilisez 'regex', 'etree' ou 'feedparser'.")
+		sys.exit(1)
+
+	articles_total = []
+	for file in xml_files:
+		try:
+			articles = method_func[method](file)
+			articles_total.extend(articles)
+		except:
+			print(f"Impossible de traiter le fichier {file}, fichier XML mal formé")
 
 	return articles_total
 
@@ -236,7 +221,7 @@ def main():
 	args = parser.parse_args()
 
 	if not os.path.isdir(args.dossier_entree):
-		print(f"Erreur : Le dossier '{args.dossier_xml}' n'existe pas.")
+		print(f"Erreur : Le dossier '{args.dossier_entree}' n'existe pas.")
 		sys.exit(1)
 
 	articles = run_method(args.method, args.lecture, args.dossier_entree)
