@@ -81,7 +81,7 @@ def lire_rss_regex(xml_file):
 		date_value = date_match.group(1) if date_match else " "
 		categories_value = [", ".join(categories)] if categories else "[]"
 
-		article = {'id': id_value, 'source': xml_file, 'title' : title_value, 'description': desc_value, 'date' : date_value, 'categories': categories_value}
+		article = {'id': id_value, 'source': str(xml_file), 'title' : title_value, 'description': desc_value, 'date' : date_value, 'categories': categories_value}
 		articles.append(article)
 
 	return articles
@@ -105,7 +105,7 @@ def lire_rss_etree(xml_file):
 		title = item.find("title").text if item.find("title") is not None else " "
 		date = item.find("pubDate").text if item.find("pubDate") is not None else " "
 
-		article = {'id': id,  'source' : xml_file, 'title': title, 'description': description, 'date' : date, 'categories': categories}
+		article = {'id': id,  'source' : str(xml_file), 'title': title, 'description': description, 'date' : date, 'categories': categories}
 		articles.append(article)
 
 	return articles
@@ -120,7 +120,7 @@ def lire_rss_feedparser(xml_file):
 		categories = [tag.term for tag in entry.tags] if "tags" in entry else []
 		categories_lst = [{', '.join(f'\"{c}\"' for c in categories)}] if categories else "[]"
 
-		article = {'id': entry.link, 'source': xml_file, 'title': entry.title, 'description': entry.summary, 'date' : entry.published, 'categories': categories_lst}
+		article = {'id': entry.link, 'source': str(xml_file), 'title': entry.title, 'description': entry.summary, 'date' : entry.published, 'categories': categories_lst}
 		articles.append(article)
 		
 	return articles
@@ -169,7 +169,6 @@ def filtre_date(item:dict, date_debut, date_fin):
     return True
 
 def filtre_source(item:dict, sources:list) :
-	
 	item_source = item.get("source", []).lower()
 
 	for s in sources :
