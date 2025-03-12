@@ -79,7 +79,7 @@ def lire_rss_regex(xml_file):
 		title_value = title_match.group(1) if title_match else " "
 		desc_value = desc_match.group(1) if desc_match else " "
 		date_value = date_match.group(1) if date_match else " "
-		categories_value = [", ".join(categories)] if categories else "[]"
+		categories_value = categories if categories else "[]"
 
 		article = {'id': id_value, 'source': str(xml_file), 'title' : title_value, 'description': desc_value, 'date' : date_value, 'categories': categories_value}
 		articles.append(article)
@@ -118,7 +118,7 @@ def lire_rss_feedparser(xml_file):
 
 	for entry in flux.entries:
 		categories = [tag.term for tag in entry.tags] if "tags" in entry else []
-		categories_lst = [{', '.join(f'\"{c}\"' for c in categories)}] if categories else "[]"
+		categories_lst = categories if categories else "[]"
 
 		article = {'id': entry.link, 'source': str(xml_file), 'title': entry.title, 'description': entry.summary, 'date' : entry.published, 'categories': categories_lst}
 		articles.append(article)
@@ -185,7 +185,6 @@ def filtre_categories(item:dict, categories:list) :
 		return True
 	# On découpe le string du categorie par "," et le stoker dans une list
 	article_categories = item.get("categories")
-	article_categories = [cat.strip() for items in article_categories for cat in items.split(",")]
 	
 	if article_categories:
 		return any(cat in categories for cat in article_categories)
