@@ -188,7 +188,6 @@ def filtre_categories(item:dict, categories:list) :
 	article_categories = [cat.strip() for items in article_categories for cat in items.split(",")]
 	
 	if article_categories:
-		print(any(cat in categories for cat in article_categories))
 		return any(cat in categories for cat in article_categories)
 	return False  # Si pas de catégories, on exclut par défaut
 
