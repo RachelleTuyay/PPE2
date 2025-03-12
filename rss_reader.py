@@ -184,7 +184,7 @@ def filtre_categories(item:dict, categories:list) :
 	if not categories:
 		return True
 	# On découpe le string du categorie par "," et le stoker dans une list
-	article_categories = item.get("categories")[0].split(", ")
+	article_categories = item.get("categories")
 
 	if article_categories:
 		return any(cat in categories for cat in article_categories)
