@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Any
 
 @dataclass
-class Article:
-    article: Dict[str, Any] = field(default_factory=dict)
+class Artical:
+    data: Dict[str, Any] = field(default_factory=dict)
 
 @dataclass
 class Corpus:
