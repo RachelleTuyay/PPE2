@@ -7,57 +7,6 @@ import feedparser
 from pathlib import Path
 from datetime import datetime
 
-def lire_corpus_glob(dossier_entree) :
-		dir = Path(dossier_entree)
-		fichiers_xml = sorted(dir.glob('**/*.xml'))
-		return fichiers_xml
-
-def lire_corpus_os(dossier_entree):
-	"""Parcourt récursivement un dossier avec os.listdir() et os.path et récupère tous les fichiers XML"""
-	fichiers_xml = []
-
-	for element in os.listdir(dossier_entree):
-		chemin_complet = os.path.join(dossier_entree, element)
-		if os.path.isdir(chemin_complet):
-			fichiers_xml.extend(lire_corpus_os(chemin_complet))  
-		elif os.path.isfile(chemin_complet) and chemin_complet.endswith(".xml"):
-			fichiers_xml.append(chemin_complet)
-
-	return fichiers_xml
-
-def lire_corpus_path(dossier_entree):
-	"""Fonction pour trouver des fichiers XML et les traiter"""
-	path_to_files = Path(dossier_entree)
-	xml_files = []
-
-	if not path_to_files.exists():
-		print("Le chemin n'est pas valide.")
-		return
-
-	if not path_to_files.is_dir():
-		print("Ce n'est pas un dossier, veuillez réessayer avec un autre chemin.")
-		return
-
-	print("C'est effectivement un dossier : le programme peut démarrer.")
-
-
-	def recursive(current_path):
-		for item in current_path.iterdir():
-			if item.is_file() and ".xml" in str(item):
-				xml_files.append(item)
-			elif item.is_dir():
-				recursive(item)
-	recursive(path_to_files)
-	return xml_files
-
-
-def get_output_filename(xml_file, dossier_entree, dossier_sortie):
-	"""Générer un nom de fichier de sortie basé sur le fichier XML"""
-	rel_path = os.path.relpath(xml_file, dossier_entree)  # Chemin relatif
-	file_name_simple = os.path.splitext(rel_path)[0]
-	return os.path.join(dossier_sortie, file_name_simple + ".txt")
-
-
 def lire_rss_regex(xml_file):
 	"""Méthode R1 : Extraction avec expressions régulières (Regex)"""
 
@@ -79,7 +28,7 @@ def lire_rss_regex(xml_file):
 		title_value = title_match.group(1) if title_match else " "
 		desc_value = desc_match.group(1) if desc_match else " "
 		date_value = date_match.group(1) if date_match else " "
-		categories_value = categories if categories else "[]"
+		categories_value = [", ".join(categories)] if categories else "[]"
 
 		article = {'id': id_value, 'source': str(xml_file), 'title' : title_value, 'description': desc_value, 'date' : date_value, 'categories': categories_value}
 		articles.append(article)
@@ -118,33 +67,30 @@ def lire_rss_feedparser(xml_file):
 
 	for entry in flux.entries:
 		categories = [tag.term for tag in entry.tags] if "tags" in entry else []
-		categories_lst = categories if categories else "[]"
+		categories_lst = [{', '.join(f'\"{c}\"' for c in categories)}] if categories else "[]"
 
 		article = {'id': entry.link, 'source': str(xml_file), 'title': entry.title, 'description': entry.summary, 'date' : entry.published, 'categories': categories_lst}
 		articles.append(article)
 		
 	return articles
 
-def run_method(method, lecture, dossier_entree):
+def run_method(method, xml_file):
 	"""Appelle la méthode sélectionnée avec le fichier XML"""
 
-	lire_func = {"glob" : lire_corpus_glob, "os" : lire_corpus_os, "path" : lire_corpus_path}
-	xml_files = lire_func[lecture](dossier_entree)
 
 	method_func = {"regex" : lire_rss_regex, "etree" : lire_rss_etree, "feedparser" : lire_rss_feedparser}
 	if method not in method_func:
 		print("Erreur : Méthode invalide. Utilisez 'regex', 'etree' ou 'feedparser'.")
 		sys.exit(1)
 
-	articles_total = []
-	for file in xml_files:
-		try:
-			articles = method_func[method](file)
-			articles_total.extend(articles)
-		except:
-			print(f"Impossible de traiter le fichier {file}, fichier XML mal formé")
 
-	return articles_total
+	try:
+		articles = method_func[method](xml_file)
+	except:
+		print(f"Impossible de traiter le fichier {xml_file}, fichier XML mal formé")
+
+	return articles
+
 
 def filtre_date(item:dict, date_debut, date_fin):
     """
@@ -184,8 +130,12 @@ def filtre_categories(item:dict, categories:list) :
 	if not categories:
 		return True
 	# On découpe le string du categorie par "," et le stoker dans une list
-	article_categories = item.get("categories")
-	
+	if len(item.get("categories")) == 1 :
+
+		article_categories = item.get("categories")[0].split(", ")
+	else :
+		article_categories = item.get("categories")
+
 	if article_categories:
 		return any(cat in categories for cat in article_categories)
 	return False  # Si pas de catégories, on exclut par défaut
@@ -210,8 +160,7 @@ def filtrage(filtres, articles):
 def main():
 	"""Gère l'entrée utilisateur avec des arguments Bash"""
 	parser = argparse.ArgumentParser(description="Analyseur RSS avec trois méthodes différentes.")
-	parser.add_argument("dossier_entree", help="Dossier comprenant les fichiers XML d'entrée")
-	parser.add_argument("lecture", choices=["glob","os","path"], help="Choisir le module utilisé pour lire le dossier d'entrée")
+	parser.add_argument("fichier_entree", help="Dossier comprenant les fichiers XML d'entrée")
 	parser.add_argument("method", choices=["regex", "etree", "feedparser"], help="Méthode d'extraction (r1, r2, r3)")
 	parser.add_argument("--start-date", help="Filtrer les articles publiés après cette date (format YYYY-MM-DD)")
 	parser.add_argument("--end-date", help="Filtrer les articles publiés avant cette date (format YYYY-MM-DD)")
@@ -219,11 +168,11 @@ def main():
 	parser.add_argument("--categorie", nargs="+", help="Filtrer par une ou plisieurs catégories")
 	args = parser.parse_args()
 
-	if not os.path.isdir(args.dossier_entree):
-		print(f"Erreur : Le dossier '{args.dossier_entree}' n'existe pas.")
+	if not os.path.isfile(args.fichier_entree):
+		print(f"Erreur : Le fichier '{args.fichier_entree}' n'existe pas.")
 		sys.exit(1)
 
-	articles = run_method(args.method, args.lecture, args.dossier_entree)
+	articles = run_method(args.method, args.fichier_entree)
 
 
 	filtres = []
