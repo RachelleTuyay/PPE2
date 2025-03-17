@@ -222,8 +222,8 @@ def main():
 		corpus.save_xml(args.output)
 	elif output_format in ['pkl', 'pickle']:
 		corpus.save_pickle(args.output)
-	else:  # Par défaut, utiliser le format texte
-		corpus.save_txt(args.output)
+	else:  # Par défaut, utiliser le format json
+		corpus.save_json(args.output)
 		
 	print(f"Traitement terminé. {len(corpus.articles)} articles ont été écrits dans {args.output}")
 
