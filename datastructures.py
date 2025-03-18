@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Any
 from pathlib import Path
+import pickle
 
 @dataclass
 class Article:
@@ -50,8 +51,14 @@ class Corpus:
     def save_xml(self, output_file: Path) -> None:
         pass
 
-    def load_pickle(input_file: Path):
-        pass
+    def load_pickle(input_file: "Path"):
+        output_file = open(input_file, 'rb')    
+        output = pickle.load(input_file)
+        for article in output:
+            for keys in article :
+                print(keys, ":", article[keys])
+        output_file.close()
 
     def save_pickle(self, output_file: Path) -> None:
-        pass
+        with open(output_file, 'wb') as output:
+            pickle.dump(self, output)
