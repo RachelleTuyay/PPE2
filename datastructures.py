@@ -78,7 +78,10 @@ class Corpus:
                 else:
                     sub_elem = ET.SubElement(article_elem, key)  # stoker chaque string (soit id, title, etc...)
                     sub_elem.text = str(value)
-
+        
+        # rendre le format de xml plus lisible (la version de Python dois plus de 3.9)
+        ET.indent(root, space="  ", level=0)  
+        
         tree = ET.ElementTree(root)
         tree.write(output_file, encoding="utf-8", xml_declaration=True)
 
