@@ -54,7 +54,7 @@ class Corpus:
             article = {}
 
             for child in article_elem:
-                if len(child) > 0:  # 说明是 list 类型
+                if len(child) > 0:  # Si c'est une list (ex. categorie)
                     article[child.tag] = [item.text for item in child.findall("item")]
                 else:
                     article[child.tag] = child.text
@@ -65,18 +65,18 @@ class Corpus:
 
     def save_xml(self, output_file: Path) -> None:
         """Sauvgarder le Corpus en xml"""
-        root = ET.Element("articles")  # 创建 XML 根节点
+        root = ET.Element("articles")  # creer le root
 
-        for article in self.articles:  # 遍历 Corpus.articles 列表中的每篇文章：
-            article_elem = ET.SubElement(root, "article")  # 创建 <article> 标签，每篇文章都有一个。
+        for article in self.articles:  # parcourir chaque article dans le corpus
+            article_elem = ET.SubElement(root, "article")  # creer la balise <article> qui contient chanque article
             for key, value in article.to_dict().items():
-                if isinstance(value, list):  # 处理 list 类型数据
-                    list_elem = ET.SubElement(article_elem, key)  # 创建 list 类型的标签
+                if isinstance(value, list):  # Si c'est une list (categorie)
+                    list_elem = ET.SubElement(article_elem, key)  # creer la balise de liste (categorie)
                     for item in value:
                         item_elem = ET.SubElement(list_elem, "item")
-                        item_elem.text = str(item)  # 存储列表中的每个值
+                        item_elem.text = str(item)  # stoker chaque categorie
                 else:
-                    sub_elem = ET.SubElement(article_elem, key)  # 处理普通数据
+                    sub_elem = ET.SubElement(article_elem, key)  # stoker chaque string (soit id, title, etc...)
                     sub_elem.text = str(value)
 
         tree = ET.ElementTree(root)
