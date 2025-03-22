@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Any
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import pickle
 
 @dataclass
 class Article:
@@ -67,7 +68,7 @@ class Corpus:
         """Sauvgarder le Corpus en xml"""
         root = ET.Element("articles")  # creer le root
 
-        for article in self.articles:  # parcourir chaque article dans le corpus
+	for article in self.articles:  # parcourir chaque article dans le corpus
             article_elem = ET.SubElement(root, "article")  # creer la balise <article> qui contient chanque article
             for key, value in article.to_dict().items():
                 if isinstance(value, list):  # Si c'est une list (categorie)
@@ -82,9 +83,15 @@ class Corpus:
         tree = ET.ElementTree(root)
         tree.write(output_file, encoding="utf-8", xml_declaration=True)
 
-    def load_pickle(input_file: Path):
-        pass
+
+    def load_pickle(input_file: "Path"):
+        output_file = open(input_file, 'rb')    
+        output = pickle.load(input_file)
+        for article in output:
+            for keys in article :
+                print(keys, ":", article[keys])
+        output_file.close()
 
     def save_pickle(self, output_file: Path) -> None:
-        pass
-    
+        with open(output_file, 'wb') as output:
+            pickle.dump(self, output)
