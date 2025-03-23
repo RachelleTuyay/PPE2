@@ -41,28 +41,52 @@ class Article:
 class Corpus:
     articles: List[Dict[str, Any]] = field(default_factory=list)
 
-@classmethod
-def load_json(cls, input_file: Path):
-    """Charge un corpus depuis un fichier JSON"""
-    try:
-        with open(input_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        articles = [Article.from_dict(article_data) for article_data in data]
-        return cls(articles)
-    except Exception as e:
-        print(f"Erreur lors du chargement du fichier JSON: {e}")
-        return cls([])
+    @classmethod
 
-def save_json(self, output_file: Path) -> None:
-    """Sauvegarde le corpus dans un fichier JSON"""
-    try:
-        articles_dict = [article.to_dict() for article in self.articles]
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(articles_dict, f, ensure_ascii=False, indent=4)
-        print(f"Corpus sauvegardé dans {output_file}")
-    except Exception as e:
-        print(f"Erreur lors de la sauvegarde en JSON: {e}")
+
+    def save_json(self, output_file: Path) -> None:
+        """Sauvegarde le corpus dans un fichier JSON"""
+        try:
+            articles_dict = [article.to_dict() for article in self.articles]
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(articles_dict, f, ensure_ascii=False, indent=4)
+            print(f"Corpus sauvegardé dans {output_file}")
+        except Exception as e:
+            print(f"Erreur lors de la sauvegarde en JSON: {e}")
+
+   
+
+    def save_xml(self, output_file: Path) -> None:
+        """Sauvgarder le Corpus en xml"""
+        root = ET.Element("articles")  # creer le root
+
+        for article in self.articles:  # parcourir chaque article dans le corpus
+                article_elem = ET.SubElement(root, "article")  # creer la balise <article> qui contient chanque article
+                for key, value in article.to_dict().items():
+                    if isinstance(value, list):  # Si c'est une list (categorie)
+                        list_elem = ET.SubElement(article_elem, key)  # creer la balise de liste (categorie)
+                        for item in value:
+                            item_elem = ET.SubElement(list_elem, "item")
+                            item_elem.text = str(item)  # stoker chaque categorie
+                    else:
+                        sub_elem = ET.SubElement(article_elem, key)  # stoker chaque string (soit id, title, etc...)
+                        sub_elem.text = str(value)
+                tree = ET.ElementTree(root)
+                tree.write(output_file, encoding="utf-8", xml_declaration=True)     
+
+    def save_pickle(self, output_file: Path) -> None:
+        """Sauvegarde un corpus dans un fichier pickle"""
+        with open(output_file, 'wb') as output:
+            pickle.dump(self, output)
+            
+def load_pickle(input_file: "Path"):
+    """Charge le corpus depuis un fichier pickle"""
+    output_file = open(input_file, 'rb')    
+    output = pickle.load(output_file)
+    articles = []
+    for article in output.articles:
+        articles.append(article)
+    return Corpus(articles)
 
 def load_xml(input_file: Path):
     tree = ET.parse(input_file)
@@ -82,41 +106,17 @@ def load_xml(input_file: Path):
 
     return Corpus(articles)
 
-def save_xml(self, output_file: Path) -> None:
-    """Sauvgarder le Corpus en xml"""
-    root = ET.Element("articles")  # creer le root
-
-    for article in self.articles:  # parcourir chaque article dans le corpus
-            article_elem = ET.SubElement(root, "article")  # creer la balise <article> qui contient chanque article
-            for key, value in article.to_dict().items():
-                if isinstance(value, list):  # Si c'est une list (categorie)
-                    list_elem = ET.SubElement(article_elem, key)  # creer la balise de liste (categorie)
-                    for item in value:
-                        item_elem = ET.SubElement(list_elem, "item")
-                        item_elem.text = str(item)  # stoker chaque categorie
-                else:
-                    sub_elem = ET.SubElement(article_elem, key)  # stoker chaque string (soit id, title, etc...)
-                    sub_elem.text = str(value)
-            tree = ET.ElementTree(root)
-            tree.write(output_file, encoding="utf-8", xml_declaration=True)
-
-
-
-def load_pickle(input_file: "Path"):
-    """Charge le corpus depuis un fichier pickle"""
-    output_file = open(input_file, 'rb')    
-    output = pickle.load(output_file)
-    articles = []
-    for article in output.articles:
-        articles.append(article)
-    return Corpus(articles)
+def load_json(cls, input_file: Path):
+    """Charge un corpus depuis un fichier JSON"""
+    try:
+        with open(input_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         
-
-def save_pickle(self, output_file: Path) -> None:
-    """Sauvegarde un corpus dans un fichier pickle"""
-    with open(output_file, 'wb') as output:
-        pickle.dump(self, output)
-
+        articles = [Article.from_dict(article_data) for article_data in data]
+        return cls(articles)
+    except Exception as e:
+        print(f"Erreur lors du chargement du fichier JSON: {e}")
+        return cls([])
 
 @dataclass
 
