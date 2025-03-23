@@ -103,13 +103,30 @@ def save_xml(self, output_file: Path) -> None:
 
 
 def load_pickle(input_file: "Path"):
+    """Charge le corpus depuis un fichier pickle"""
     output_file = open(input_file, 'rb')    
-    output = pickle.load(input_file)
-    for article in output:
-        for keys in article :
-            print(keys, ":", article[keys])
-    output_file.close()
+    output = pickle.load(output_file)
+    articles = []
+    for article in output.articles:
+        articles.append(article)
+    return Corpus(articles)
+        
 
 def save_pickle(self, output_file: Path) -> None:
+    """Sauvegarde un corpus dans un fichier pickle"""
     with open(output_file, 'wb') as output:
         pickle.dump(self, output)
+
+
+@dataclass
+
+class Token :
+    form : str
+    lemma : str
+    pos : str
+
+@dataclass
+
+class AnalyzedArticle :
+    article : Article
+    analyse_description : List[Token]
