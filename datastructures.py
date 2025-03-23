@@ -81,7 +81,7 @@ class Corpus:
         try:
             with open(input_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            
+
             articles = [Article.from_dict(article_data) for article_data in data]
             return cls(articles)
         except Exception as e:
@@ -155,8 +155,8 @@ class Corpus:
         tree.write(output_file, encoding="utf-8", xml_declaration=True)
 
 
-    @classmethod  # Ajout du décorateur @classmethod
-    def load_pickle(cls, input_file: Path):  # Ajout du paramètre cls
+    @classmethod
+    def load_pickle(cls, input_file: Path):
         try:
             with open(input_file, 'rb') as f:
                 loaded_corpus = pickle.load(f)
