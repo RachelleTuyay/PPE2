@@ -1,68 +1,122 @@
-import stanza
-from datastructures import Article, Corpus, Token, AnalyzedArticle
-from pathlib import Path
-import os
 import argparse
+import os
+from datastructures import Corpus, Article, Token
+from trankit import Pipeline
+import stanza
+from pathlib import Path
+import json
+import sys
 
+# Cache pour le pipeline Trankit pour éviter de le charger plusieurs fois
+_pipeline = None
+
+def get_pipeline():
+    """Charge et retourne le pipeline Trankit"""
+    global _pipeline
+    if _pipeline is None:
+        _pipeline = Pipeline('french', gpu=False)
+        _pipeline.add('english')
+    return _pipeline
+
+def analyze_with_trankit(article: Article) -> Article:
+    """Analyse un article avec Trankit et retourne l'article enrichi avec les tokens analysés"""
+    # Combine le titre et la description pour l'analyse
+    text = f"{article.title} {article.description}"
+    if not text.strip():
+        return article  # Si le texte est vide, retourner l'article non modifié
+    
+    p = get_pipeline()
+    try:
+        # Analyse le texte avec Trankit
+        result = p(text)
+
+        tokens = []
+        for sentence in result['sentences']:
+            for token_data in sentence['tokens']:
+                token = Token(
+                    text=token_data['text'],
+                    lemma=token_data.get('lemma', None),
+                    pos=token_data.get('upos', None)
+                )
+                tokens.append(token)
+        # Ajoute les tokens à l'article
+        article.tokens = tokens
+    except Exception as e:
+        print(f"Erreur lors de l'analyse de l'article {article.id}: {e}")
+
+    return article
 
 def load_model_stanza() :
     stanza_dir = str(Path.home()) + "/stanza_resources/fr/"
     if not os.path.isdir(stanza_dir):
         stanza.download('fr') 
     else :
-        return
-    
+        print('Can not load stanza model')
 
-def analyse_stanza(article:Article) -> AnalyzedArticle :
-    
+
+def analyse_stanza(article:Article) -> Article :
+
     load_model_stanza()
     nlp = stanza.Pipeline('fr', processors='tokenize,mwt,pos,lemma', verbose=False)
+    text = f"{article.title} {article.description}"
+    if not text.strip():
+        return article
 
-
-    def extraction_tokens(text:str):
+    try:
         doc = nlp(text)
 
         tokens = []
         for sentence in doc.sentences : 
             for word in sentence.words :
                 tokens.append(Token(word.text, word.lemma, word.pos))
-        return tokens
-
-    tokens_description = extraction_tokens(article.description)
-    return AnalyzedArticle(article, tokens_description)
-        
-
+        article.tokens = tokens
+    except Exception as e:
+        print(f"Erreur lors de l'analyse de l'article {article.id} avec Stanza: {e}")
+    
+    return article
 
 def main():
-    parser = argparse.ArgumentParser(description="Analyseur tokens")
-    parser.add_argument("fichier_entree", help="Fichier d'entrée correspondant au corpus d'articles filtrés")
-    parser.add_argument("format", choices=["json","pickle","xml"], help="format du fichier d'entrée")
-    parser.add_argument("analyzer", choices=["stanza","spacy","trankit"], help="choix de l'analyzer syntaxique à utiliser")
-    parser.add_argument("save", choices=["json","xml","pickle"], help="format de sauvegarde pour la sortie de l'analyse")
+    parser = argparse.ArgumentParser(description="Analyse linguistique de corpus avec Trankit")
+    parser.add_argument("input_file", help="Input file containing filtered articles corpus")
+    parser.add_argument("analyzer", choices=["trankit", "spacy", "stanza"], help="Choice of syntax analyzer to use")
+    parser.add_argument("save", choices=["json", "xml", "pickle"], help="Output format for saving the analysis")
     args = parser.parse_args()
-    file = args.fichier_entree
+    
+    # Load corpus based on specified format
+    input_path = Path(args.input_file)
+    if ".json" in args.input_file:
+        corpus = Corpus.load_json(input_path)
+    elif ".xml" in args.input_file:
+        corpus = Corpus.load_xml(input_path)
+    elif ".pickle" in args.input_file:
+        corpus = Corpus.load_pickle(input_path)
+    
+    # Analyze articles with the specified analyzer
+    if args.analyzer == "trankit":
+        print(f"Analyzing {len(corpus.articles)} articles with Trankit...")
+        for i, article in enumerate(corpus.articles):
+            if i % 10 == 0:  # Display progress every 10 articles
+                print(f"Analyzing article {i+1}/{len(corpus.articles)}")
+            analyze_with_trankit(article)
+    elif args.analyzer == "stanza" :
+        print(f"Analyzing {len(corpus.articles)} articles with Stanza...")
+        for i, article in enumerate(corpus.articles):
+            if i % 10 == 0:  # Display progress every 10 articles
+                print(f"Analyzing article {i+1}/{len(corpus.articles)}")
+            analyse_stanza(article)
 
+    # Save the analyzed corpus in specified format
+    output_filename = f"output_analyzed.{args.save}"
+    print(f"Saving analyzed corpus to {output_filename}...")
+    
+    if args.save == "json":
+        corpus.save_json(output_filename)
+    elif args.save == "xml":
+        corpus.save_xml(output_filename)
+    elif args.save == "pickle":
+        corpus.save_pickle(output_filename)
+    
+    print("Analysis completed successfully!")
 
-    if args.format == "json" :
-        corpus_article = load_json(Corpus, file)
-    if args.format == "xml" :
-        corpus_article = load_xml(file)
-    if args.format == "pickle":
-        corpus_article = load_pickle(file)
-    if args.analyzer == "stanza" :
-        articles_analyzed = []
-        for article in corpus_article.articles :
-            articles_analyzed.append(analyse_stanza(article))
-
-    corpus_analyse = Corpus(articles_analyzed)
-    if args.save == "json" :
-        corpus_analyse.save_json("output_analyse.json")
-    if args.save == "xml" :
-        corpus_analyse.save_xml("output_analyse.xml")
-    if args.save == "pickle":
-        corpus_analyse.save_pickle("output_analyse.pickle")
-
-
-if __name__ == "__main__" :
+if __name__ == "__main__":
     main()
-
