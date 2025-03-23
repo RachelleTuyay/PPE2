@@ -119,14 +119,12 @@ def save_pickle(self, output_file: Path) -> None:
 
 
 @dataclass
-
 class Token :
     form : str
     lemma : str
     pos : str
 
 @dataclass
-
 class AnalyzedArticle :
     article : Article
     analyse_description : List[Token]

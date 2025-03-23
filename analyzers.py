@@ -20,7 +20,6 @@ def analyse_stanza(article:Article) -> AnalyzedArticle :
 
 
     def extraction_tokens(text:str):
-
         doc = nlp(text)
 
         tokens = []
@@ -62,7 +61,6 @@ def main():
         corpus_analyse.save_xml("output_analyse.xml")
     if args.save == "pickle":
         corpus_analyse.save_pickle("output_analyse.pickle")
-
 
 
 if __name__ == "__main__" :
