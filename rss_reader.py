@@ -34,7 +34,7 @@ def lire_rss_regex(xml_file):
 		#article = {'id': id_value, 'source': str(xml_file), 'title' : title_value, 'description': desc_value, 'date' : date_value, 'categories': categories_value}
 		article = Article(
 			id=id_value,
-			source=str(xml_file),
+			source=os.path.basename(xml_file),
 			title=title_value,
 			description=desc_value,
 			date=date_value,
@@ -66,7 +66,7 @@ def lire_rss_etree(xml_file):
 		#article = {'id': id,  'source' : str(xml_file), 'title': title, 'description': description, 'date' : date, 'categories': categories}
 		article = Article(
 			id=id,
-			source=str(xml_file),
+			source=os.path.basename(xml_file),
 			title=title,
 			description=description,
 			date=date,
@@ -89,7 +89,7 @@ def lire_rss_feedparser(xml_file):
 		#article = {'id': entry.link, 'source': str(xml_file), 'title': entry.title, 'description': entry.summary, 'date' : entry.published, 'categories': categories_lst}
 		article = Article(
 			id=entry.link if 'link' in entry else "",
-			source=str(xml_file),
+			source=os.path.basename(xml_file),
 			title=entry.title if 'title' in entry else "",
 			description=entry.summary if 'summary' in entry else "",
 			date=entry.published if 'published' in entry else "",
