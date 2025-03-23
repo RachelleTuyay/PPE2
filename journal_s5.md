@@ -40,3 +40,11 @@ Pour `datastructures.py`, j'ai creé deux classes avec `@dataclass` : `Article` 
     - `load_json`, `save_json`
     - `load_xml`, `save_xml`
     - `load_pickle`, `save_pickle`
+
+
+## Maïwenn
+
+J'ai travaillé sur le fichier rss_reader.py et sur la (dé)sérialisation avec le format pickle.
+
+J'ai modifié le script originel pour conserver uniquement les fonctions qui traitent qu'un seul fichier (donc en retirant les fonctions de parcours de dossier) ce qui n'était pas très long à faire.
+Ensuite pour la sérialisation et désérialisation j'ai rempli les fonctions load_pickle et save_pickle. Je n'ai pas eu de mal à écrire save_pickle mais pour load_pickle j'étais moins sûre. J'ai écrit quelque chose mais qui ne marchait pas, mais au final j'ai réussi à récupérer chaque article dans le fichier pour le remettre dans une liste qui est ensuite convertie en objet Corpus.
