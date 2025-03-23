@@ -11,8 +11,6 @@ class Token:
     text: str
     lemma: Optional[str] = None
     pos: Optional[str] = None
-    start_char: Optional[int] = None
-    end_char: Optional[int] = None
     
     def to_dict(self):
         """Convert token to dictionary for serialization"""
