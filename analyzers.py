@@ -1,5 +1,5 @@
 import stanza
-from datastructures import Article,Corpus,Token, load_json, load_pickle, load_xml, AnalyzedArticle, save_json, save_pickle, save_xml
+from datastructures import Article, Corpus, Token, load_json, load_pickle, load_xml, AnalyzedArticle
 from pathlib import Path
 import os
 import argparse
@@ -55,15 +55,13 @@ def main():
         for article in corpus_article.articles :
             articles_analyzed.append(analyse_stanza(article))
 
-            '''with open("output_analyse.txt", "a") as output :
-                output.write(f"Titre : {res_analyse[0]}\nTokens : {res_analyse[1]}\n\n")'''
     corpus_analyse = Corpus(articles_analyzed)
     if args.save == "json" :
-        corpus_article = save_json(corpus_analyse, "output_analyse.json")
+        corpus_analyse.save_json("output_analyse.json")
     if args.save == "xml" :
-        corpus_article = save_xml(corpus_analyse, "output_analyse.xml")
+        corpus_analyse.save_xml("output_analyse.xml")
     if args.save == "pickle":
-        corpus_article = save_pickle(corpus_analyse, "output_analyse.pickle")
+        corpus_analyse.save_pickle("output_analyse.pickle")
 
 
 
