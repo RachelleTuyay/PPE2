@@ -1,10 +1,7 @@
-# analyzers.py
-
 import spacy
 from pathlib import Path
 from datastructures import Article, Corpus, Token
 from dataclasses import asdict
-import json
 import argparse
 
 # 1. load modèle de spacy
@@ -16,11 +13,13 @@ def analyze_text_spacy(text: str, nlp) -> list[Token]:
     doc = nlp(text)
     tokens = []
     for token in doc:
-        tokens.append(Token(
-            text=token.text,
-            lemma=token.lemma_,
-            pos=token.pos_
-        ))
+        tokens.append(
+            Token(
+                text=token.text,
+                lemma=token.lemma_,
+                pos=token.pos_
+            )
+        )
     return tokens
 
 # 3. analyser un Article
