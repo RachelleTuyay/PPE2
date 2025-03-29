@@ -4,6 +4,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import pickle
 import json
+import argparse
 
 @dataclass
 class Token:
@@ -38,7 +39,7 @@ class Article:
     description: str
     date: str
     categories: List[str] = field(default_factory=list)
-    tokens: List[Token] = field(default_factory=list)
+    tokens: list[list[Token]] = field(default_factory=list)
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'Article':
@@ -183,3 +184,39 @@ class Corpus:
             print(f"Corpus sauvegardé dans {output_file}")
         except Exception as e:
             print(f"Erreur lors de la sauvegarde en pickle: {e}")
+
+
+name_to_saver = {
+    "xml": Corpus.save_xml,
+    "json": Corpus.save_json,
+    "pickle": Corpus.save_pickle
+}
+
+name_to_loader = {
+    "xml": Corpus.load_xml,
+    "json": Corpus.load_json,
+    "pickle": Corpus.load_pickle
+}
+
+
+def main(input_file, output_file, loader, saver) :
+
+    Corpus.load = name_to_loader[loader]
+    Corpus.save = name_to_saver[saver]
+
+
+    corpus = Corpus.load(input_file)
+    corpus.save(output_file)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser("(de)serialize some RSS data.")
+
+    parser.add_argument("input_file", help="input serialized RSS file")
+    parser.add_argument("output_file", help="output serialized RSS file")
+    parser.add_argument("-l", "--loader", choices=("xml", "json", "pickle"), required=True)
+    parser.add_argument("-s", "--saver", choices=("xml", "json", "pickle"), required=True)
+
+    args = parser.parse_args()
+
+    main(args.input_file, args.output_file, args.loader, args.saver)

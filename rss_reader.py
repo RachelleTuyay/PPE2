@@ -128,10 +128,10 @@ def filtre_date(item:Article, date_debut, date_fin):
 	else:  # Si aucune date, conserver par défaut (peut être changé en False pour exclure)
 		return True
 
-	if date_debut and date < datetime.strptime(date_debut, "%Y-%m-%d"):
+	if date_debut and date != None and date < datetime.strptime(date_debut, "%Y-%m-%d"):
 		return False
 
-	if date_fin and date > datetime.strptime(date_fin, "%Y-%m-%d"):
+	if date_fin and date != None and date > datetime.strptime(date_fin, "%Y-%m-%d"):
 		return False
 	
 	return True
