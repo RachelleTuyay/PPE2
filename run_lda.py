@@ -12,6 +12,8 @@ import tarfile
 import json
 import glob
 import xml.etree.ElementTree as ET
+import spacy
+
 
 import smart_open
 from nltk.tokenize import RegexpTokenizer
@@ -94,6 +96,19 @@ def tokenize(docs):
 
     return docs
 
+def filter_by_pos(docs, allowed_pos=["NOUN", "VERB"]):
+    """filtrer sur les catégories grammaticales"""
+    nlp = spacy.load("fr_core_news_sm")
+    filtered_docs = []
+
+    for doc in docs:
+        spacy_doc = nlp(" ".join(doc))  # utiliser spaCy
+        filtered = [token.text for token in spacy_doc if token.pos_ in allowed_pos]
+        filtered_docs.append(filtered)
+
+    return filtered_docs
+
+
 def lemmatize(docs):
     """Lemmatisation des documents."""
     lemmatizer = WordNetLemmatizer()
@@ -154,8 +169,13 @@ def main():
     #Lemmatisation :
     docs_processed = lemmatize(docs_tokenized) if args.methode == "lemme" else docs_tokenized
 
+    #  filtrer sur les catégories grammaticales ( ne prendre que les noms et les verbes)
+    docs_filtered = filter_by_pos(docs_processed)
+
+
     #Bigrammes :
-    docs_bigrams = bigrams(docs_processed)
+    docs_bigrams = bigrams(docs_filtered)
+
 
     #Modèle LDA :
     model, dictionary, corpus = train_lda(docs_bigrams)
