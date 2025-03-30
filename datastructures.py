@@ -72,7 +72,7 @@ class Article:
 
 @dataclass
 class Corpus:
-    articles: List[Dict[str, Any]] = field(default_factory=list)
+    articles: list[Article] = field(default_factory=list)
 
     @classmethod
     def load_json(cls, input_file: Path):

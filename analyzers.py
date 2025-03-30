@@ -1,7 +1,7 @@
 import argparse
 import os
 from datastructures import Corpus, Article, Token
-from trankit import Pipeline
+#from trankit import Pipeline
 import stanza
 from pathlib import Path
 import json
@@ -51,7 +51,7 @@ def load_model_stanza() :
     if not os.path.isdir(stanza_dir):
         stanza.download('fr') 
     else :
-        print('Can not load stanza model')
+        print('Model already downloaded')
 
 
 def analyse_stanza(article:Article) -> Article :

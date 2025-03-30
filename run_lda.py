@@ -13,7 +13,8 @@ import json
 import glob
 import xml.etree.ElementTree as ET
 import spacy
-
+import pickle
+from datastructures import Corpus, Article
 
 import smart_open
 from nltk.tokenize import RegexpTokenizer
@@ -31,7 +32,7 @@ download('stopwords')
 
 def extract_documents(folder_path, file_format):
     """Extrait les documents depuis un dossier contenant des fichiers XML."""
-    if file_format not in {"xml", "json"}:
+    if file_format not in {"xml", "json", "pickle"}:
         raise ValueError(f"Format non pris en charge : {file_format}")
 
     folder_path = os.path.abspath(folder_path)  # Normaliser le chemin du dossier
@@ -47,24 +48,26 @@ def extract_documents(folder_path, file_format):
 def read_file(file_path, file_format):
     """Lit un fichier et extrait son contenu selon son format."""
     try:
-        with open(file_path, "r", encoding="utf-8", errors="replace") as f:
-            content = f.read()
 
         if file_format == "json":
-            data = json.loads(content)
-            if isinstance(data, list):
-                yield from data
-            elif isinstance(data, dict):
-                yield data.get("text", "")
+            try :
+                yield Corpus.load_json(file_path)
+            except Exception as e :
+                print(f"Erreur lors du chargement du fichier json: {e}")
 
         elif file_format == "xml":
-            try:
-                tree = ET.parse(file_path)  # Plus robuste que ET.fromstring
-                root = tree.getroot()
-                yield " ".join(elem.text.strip() for elem in root.iter() if elem.text)
-            except ET.ParseError:
-                logging.error(f"Erreur d'analyse XML dans {file_path}")
+            try :
+                yield Corpus.load_xml(file_path)
+            except Exception as e :
+                print(f"Erreur lors du chargement du fichier xml: {e}")
 
+        elif file_format == "pickle" :
+            try:
+                yield Corpus.load_pickle(file_path)
+                  
+            except Exception as e:
+                print(f"Erreur lors du chargement du fichier pickle: {e}")
+              
 
         else:
             raise ValueError(f"Format non pris en charge : {file_format}")
@@ -77,33 +80,37 @@ from nltk.corpus import stopwords
 
 def tokenize(docs):
     """Tokenisation des documents."""
-    tokenizer = RegexpTokenizer(r'\w+')
+
     stop_words = set(stopwords.words('french'))  # Liste des mots à ignorer
 
     # Traitement de chaque document
     for idx in range(len(docs)):
-        docs[idx] = docs[idx].lower()
-        docs[idx] = tokenizer.tokenize(docs[idx])
+
+
+        docs[idx] = [article for article in docs[idx].articles] #Transformer l'objet Corpus en liste d'Article
+
 
         # Filtrage des mots :
-        docs[idx] = [
-            word for word in docs[idx]  # Parcours de chaque mot
-            if word.isalnum() and word not in stop_words  # Garder les mots alphanumériques et non-stopwords
-        ]
+        docs[idx] = [article.tokens for article in docs[idx]]  #Récupérer chaque liste de tokens de chaque article
+        docs[idx] =  [token for tokenlist in docs[idx] for token in tokenlist] # Transformer la liste de liste de tokens en liste de tokens
+                                                                                # Autrement dit regrouper tous les tokens de tous les articles ensemble
+    
+        docs[idx] = [token for token in docs[idx] if token.text.isalnum() and token.text not in stop_words]  # Garder les mots alphanumériques et non-stopwords
 
         # Suppression des nombres et des mots d'une seule lettre
-        docs[idx] = [word for word in docs[idx] if not word.isnumeric() and len(word) > 1]
+        docs[idx] = [token for token in docs[idx] if not token.text.isnumeric() and len(token.text) > 1]
+
 
     return docs
 
-def filter_by_pos(docs, allowed_pos=["NOUN", "VERB"]):
+def filter_by_pos(docs, allowed_pos):
     """filtrer sur les catégories grammaticales"""
-    nlp = spacy.load("fr_core_news_sm")
+
     filtered_docs = []
 
     for doc in docs:
-        spacy_doc = nlp(" ".join(doc))  # utiliser spaCy
-        filtered = [token.text for token in spacy_doc if token.pos_ in allowed_pos]
+        
+        filtered = [token for token in doc if token.pos in allowed_pos]
         filtered_docs.append(filtered)
 
     return filtered_docs
@@ -111,8 +118,13 @@ def filter_by_pos(docs, allowed_pos=["NOUN", "VERB"]):
 
 def lemmatize(docs):
     """Lemmatisation des documents."""
-    lemmatizer = WordNetLemmatizer()
-    docs = [[lemmatizer.lemmatize(token) for token in doc] for doc in docs]
+    
+    lemmatized_docs = [[token.lemma for token in doc] for doc in docs]
+    return lemmatized_docs
+
+def get_text_tokens(docs):
+
+    docs = [[token.text for token in doc] for doc in docs]
     return docs
 
 def bigrams(docs):
@@ -129,7 +141,7 @@ def bigrams(docs):
 def train_lda(docs):
     """Entraîne un modèle LDA."""
     dictionary = Dictionary(docs)
-    dictionary.filter_extremes(no_below=20, no_above=0.5)
+    #dictionary.filter_extremes(no_below=20, no_above=0.5)
     corpus = [dictionary.doc2bow(doc) for doc in docs]
 
     model = LdaModel(
@@ -151,8 +163,9 @@ def train_lda(docs):
 def main():
     parser = argparse.ArgumentParser(description="Topic modeling")
     parser.add_argument("file", help="Chemin du fichier/dossier contenant le corpus")
-    parser.add_argument("format", choices=["json", "xml"], help="Format du corpus")
+    parser.add_argument("format", choices=["json", "xml", "pickle"], help="Format du corpus")
     parser.add_argument("methode", choices=["lemme", "mot-forme"], help="Choix entre lemme ou mot-forme")
+    parser.add_argument("-p", "--pos", help="Catégories grammaticales à considérer, en majuscules; exemple : VERB NOUN PRON", nargs="*" )
     args = parser.parse_args()
 
     docs = [doc for doc in extract_documents(args.file, args.format)]
@@ -166,15 +179,22 @@ def main():
     #Tokénisation :
     docs_tokenized = tokenize(docs)
 
-    #Lemmatisation :
-    docs_processed = lemmatize(docs_tokenized) if args.methode == "lemme" else docs_tokenized
+    if args.pos :
+        docs_processed = filter_by_pos(docs_tokenized, args.pos)
+
+    #Lemmatisation ou extractiond des mots-formes:
+    if args.methode == "lemme" :
+          docs_processed = lemmatize(docs_processed)
+    
+    elif args.methode == "mot-forme" :
+        docs_processed = get_text_tokens(docs_processed)
 
     #  filtrer sur les catégories grammaticales ( ne prendre que les noms et les verbes)
-    docs_filtered = filter_by_pos(docs_processed)
+   
 
 
     #Bigrammes :
-    docs_bigrams = bigrams(docs_filtered)
+    docs_bigrams = bigrams(docs_processed)
 
 
     #Modèle LDA :
