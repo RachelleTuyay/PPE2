@@ -46,34 +46,42 @@ def analyze_with_trankit(article: Article) -> Article:
 
     return article
 
-def load_model_stanza() :
-    stanza_dir = str(Path.home()) + "/stanza_resources/fr/"
-    if not os.path.isdir(stanza_dir):
-        stanza.download('fr') 
-    else :
-        print('Model already downloaded')
+
+def load_spacy():
+    import spacy
+    return spacy.load("fr_core_news_md")
+
+def load_stanza():
+    import stanza
+    # stanza.download("fr")  # garder pour la première exécution uniquement
+    return stanza.Pipeline("fr", processors="tokenize,pos,lemma")
 
 
-def analyse_stanza(article:Article) -> Article :
-
-    load_model_stanza()
-    nlp = stanza.Pipeline('fr', processors='tokenize,mwt,pos,lemma', verbose=False)
-    text = f"{article.title} {article.description}"
-    if not text.strip():
-        return article
-
-    try:
-        doc = nlp(text)
-
-        tokens = []
-        for sentence in doc.sentences : 
-            for word in sentence.words :
-                tokens.append(Token(word.text, word.lemma, word.pos))
-        article.tokens = tokens
-    except Exception as e:
-        print(f"Erreur lors de l'analyse de l'article {article.id} avec Stanza: {e}")
-    
+def analyze_stanza(model, article : Article) -> Article:
+    result = model( (article.title or "" ) + "\n" + (article.description or ""))
+    output = []
+    for sent in result.sentences:
+        output.append([])
+        for token in sent.words:
+            output[-1].append(Token(token.text, token.lemma, token.upos))
+    article.tokens = output
     return article
+
+def load_spacy():
+    import spacy
+    return spacy.load("fr_core_news_md")
+
+def analyze_spacy(model, article : Article) -> Article:
+    text = model( (article.title or "" ) + "\n" + (article.description or ""))
+    result = model(text)
+    analysis = []
+    for sentence in result.sents:
+        for token in sentence:
+            if token.text.strip():
+                analysis.append(Token(token.text, token.lemma_, token.pos_))
+    article.tokens = analysis
+    return article
+
 
 def main():
     parser = argparse.ArgumentParser(description="Analyse linguistique de corpus avec Trankit")
@@ -98,15 +106,27 @@ def main():
             if i % 10 == 0:  # Display progress every 10 articles
                 print(f"Analyzing article {i+1}/{len(corpus.articles)}")
             analyze_with_trankit(article)
+
     elif args.analyzer == "stanza" :
+        model = load_stanza()
         print(f"Analyzing {len(corpus.articles)} articles with Stanza...")
         for i, article in enumerate(corpus.articles):
             if i % 10 == 0:  # Display progress every 10 articles
                 print(f"Analyzing article {i+1}/{len(corpus.articles)}")
-            analyse_stanza(article)
+            analyze_stanza(model,article)
+    
+    elif args.analyzer == "spacy" :
+        model = load_spacy()
+        print(f"Analyzing {len(corpus.articles)} articles with Spacy...")
+        for i, article in enumerate(corpus.articles):
+            if i % 10 == 0:  # Display progress every 10 articles
+                print(f"Analyzing article {i+1}/{len(corpus.articles)}")
+            analyze_spacy(model, article)
+
 
     # Save the analyzed corpus in specified format
-    output_filename = f"output_analyzed.{args.save}"
+    inputbasename = os.path.splitext(os.path.basename(args.input_file))[0]
+    output_filename = f"{inputbasename}_analyzed.{args.save}"
     print(f"Saving analyzed corpus to {output_filename}...")
     
     if args.save == "json":
