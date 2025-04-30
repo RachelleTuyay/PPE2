@@ -14,7 +14,7 @@ import glob
 import xml.etree.ElementTree as ET
 import spacy
 import pickle
-from datastructures import Corpus, Article
+from datastructures import Corpus, Article, Token
 
 import smart_open
 from nltk.tokenize import RegexpTokenizer
@@ -30,91 +30,47 @@ download('wordnet')
 download('punkt')
 download('stopwords')
 
-def extract_documents(folder_path, file_format):
-    """Extrait les documents depuis un dossier contenant des fichiers XML."""
-    if file_format not in {"xml", "json", "pickle"}:
-        raise ValueError(f"Format non pris en charge : {file_format}")
-
-    folder_path = os.path.abspath(folder_path)  # Normaliser le chemin du dossier
-    files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith(f".{file_format}")]
-
-    if not files:
-        raise FileNotFoundError(f"Aucun fichier {file_format} trouvé dans {folder_path}")
-
-    for file in files:
-        yield from read_file(file, file_format)
-
-
-def read_file(file_path, file_format):
-    """Lit un fichier et extrait son contenu selon son format."""
-    try:
-
-        if file_format == "json":
-            try :
-                yield Corpus.load_json(file_path)
-            except Exception as e :
-                print(f"Erreur lors du chargement du fichier json: {e}")
-
-        elif file_format == "xml":
-            try :
-                yield Corpus.load_xml(file_path)
-            except Exception as e :
-                print(f"Erreur lors du chargement du fichier xml: {e}")
-
-        elif file_format == "pickle" :
-            try:
-                yield Corpus.load_pickle(file_path)
-                  
-            except Exception as e:
-                print(f"Erreur lors du chargement du fichier pickle: {e}")
-              
-
-        else:
-            raise ValueError(f"Format non pris en charge : {file_format}")
-
-    except Exception as e:
-        logging.error(f"Erreur lors de la lecture du fichier {file_path}: {e}")
-
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 
-def tokenize(docs):
-    """Tokenisation des documents."""
+name_to_loader = {"xml" : Corpus.load_xml,
+                  "json": Corpus.load_json,
+                  "pickle": Corpus.load_pickle}
+
+def load_and_tokenize(file, format) -> list[Token]:
+    """Tokenisation des termes du corpus."""
 
     stop_words = set(stopwords.words('french'))  # Liste des mots à ignorer
 
+    #Chargement du corpus
+
+    docs = name_to_loader[format](file)
+
     # Traitement de chaque document
-    for idx in range(len(docs)):
 
+    docs = [article for article in docs.articles] #Transformer l'objet Corpus en liste d'Article
 
-        docs[idx] = [article for article in docs[idx].articles] #Transformer l'objet Corpus en liste d'Article
+    # Filtrage des mots :
+    docs = [article.tokens for article in docs]  #Récupérer chaque liste de tokens de chaque article
 
+    docs = [token for tokens in docs for token in tokens] # Transformer la liste de liste de tokens en liste de tokens
+                                                                            # Autrement dit regrouper tous les tokens de tous les articles ensemble
+    docs = [token for token in docs if token.text.isalnum() and token.text not in stop_words]  # Garder les mots alphanumériques et non-stopwords
 
-        # Filtrage des mots :
-        docs[idx] = [article.tokens for article in docs[idx]]  #Récupérer chaque liste de tokens de chaque article
-        docs[idx] =  [token for tokenlist in docs[idx] for token in tokenlist] # Transformer la liste de liste de tokens en liste de tokens
-                                                                                # Autrement dit regrouper tous les tokens de tous les articles ensemble
-    
-        docs[idx] = [token for token in docs[idx] if token.text.isalnum() and token.text not in stop_words]  # Garder les mots alphanumériques et non-stopwords
-
-        # Suppression des nombres et des mots d'une seule lettre
-        docs[idx] = [token for token in docs[idx] if not token.text.isnumeric() and len(token.text) > 1]
-
+    # Suppression des nombres et des mots d'une seule lettre
+    docs = [token for token in docs if not token.text.isnumeric() and len(token.text) > 1]
 
     return docs
 
 def filter_by_pos(docs, allowed_pos):
-    """filtrer sur les catégories grammaticales"""
+    """Filtrer sur les catégories grammaticales"""
 
     filtered_docs = []
 
-    for doc in docs:
-        
-        filtered = [token for token in doc if token.pos in allowed_pos]
-        filtered_docs.append(filtered)
+    filtered = [token for token in docs if token.pos in allowed_pos]
+    filtered_docs.append(filtered)
 
     return filtered_docs
-
 
 def lemmatize(docs):
     """Lemmatisation des documents."""
@@ -123,7 +79,7 @@ def lemmatize(docs):
     return lemmatized_docs
 
 def get_text_tokens(docs):
-
+    """Récupère le mot-forme du token"""
     docs = [[token.text for token in doc] for doc in docs]
     return docs
 
@@ -168,17 +124,15 @@ def main():
     parser.add_argument("-p", "--pos", help="Catégories grammaticales à considérer, en majuscules; exemple : VERB NOUN PRON", nargs="*" )
     args = parser.parse_args()
 
-    docs = [doc for doc in extract_documents(args.file, args.format)]
-    if not docs:
+    docs_tokenized = load_and_tokenize(args.file, args.format)
+    if not docs_tokenized:
         raise ValueError("Aucun document extrait. Vérifiez votre fichier/dossier.")
 
-    print("Taille du corpus :", len(docs))
+    print("Taille du corpus :", len(docs_tokenized))
     print(f"Methode choisis : {args.methode}")
     #print(docs[0][:500])
 
-    #Tokénisation :
-    docs_tokenized = tokenize(docs)
-
+    #filtrer sur les catégories grammaticales ( ne prendre que les noms et les verbes par exemple)
     if args.pos :
         docs_processed = filter_by_pos(docs_tokenized, args.pos)
 
@@ -189,13 +143,8 @@ def main():
     elif args.methode == "mot-forme" :
         docs_processed = get_text_tokens(docs_processed)
 
-    #  filtrer sur les catégories grammaticales ( ne prendre que les noms et les verbes)
-   
-
-
     #Bigrammes :
     docs_bigrams = bigrams(docs_processed)
-
 
     #Modèle LDA :
     model, dictionary, corpus = train_lda(docs_bigrams)
