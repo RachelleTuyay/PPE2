@@ -40,6 +40,7 @@ def lire_rss_regex(xml_file):
 			date=date_value,
 			categories=categories_value
 		)
+		
 		articles.append(article)
 
 	return articles
@@ -59,7 +60,9 @@ def lire_rss_etree(xml_file):
 			for channel in root.iter("channel") :
 				for category in channel.findall("category") :
 					categories.append(category.text)
-		description = item.find("description").text if item.find("description") is not None else " "
+		description = item.find("description").text if item.find("description") is not None else ""
+		if description is None :
+			description = ""
 		title = item.find("title").text if item.find("title") is not None else " "
 		date = item.find("pubDate").text if item.find("pubDate") is not None else " "
 
@@ -72,8 +75,8 @@ def lire_rss_etree(xml_file):
 			date=date,
 			categories=categories
 		)
+		
 		articles.append(article)
-
 	return articles
 
 def lire_rss_feedparser(xml_file):
@@ -120,19 +123,24 @@ def filtre_date(item:Article, date_debut, date_fin):
 	Filtrer les articles par date
 	"""
 	# Analyser la date (si elle existe)
-	if item.date != " ":
-		try:
-			date = datetime.strptime(item.date, "%a, %d %b %Y %H:%M:%S %z").replace(tzinfo=None)
-		except ValueError:
-			date = None  # Si l'analyse échoue, définir sur None
-	else:  # Si aucune date, conserver par défaut (peut être changé en False pour exclure)
-		return True
-
-	if date_debut and date != None and date < datetime.strptime(date_debut, "%Y-%m-%d"):
+	if not item.date or not item.date.strip() :
+		return False
+		
+	try:
+		date = datetime.strptime(item.date, "%a, %d %b %Y %H:%M:%S %z").replace(tzinfo=None)
+	except ValueError:
 		return False
 
-	if date_fin and date != None and date > datetime.strptime(date_fin, "%Y-%m-%d"):
-		return False
+
+	if date_debut :
+		date_min = datetime.strptime(date_debut, "%Y-%m-%d")
+		if date < date_min :
+			return False
+
+	if date_fin :
+		date_max = datetime.strptime(date_fin, "%Y-%m-%d")
+		if date > date_max :
+			return False
 	
 	return True
 

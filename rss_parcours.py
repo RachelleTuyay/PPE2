@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from datastructures import Corpus, Article
 import rss_reader
+import numpy as np
 
 def lire_corpus_glob(dossier_entree):
 	"""Parcourt récursivement un dossier avec Path.glob() et récupère tous les fichiers XML"""
@@ -75,8 +76,16 @@ def run_method(method, lecture, dossier_entree):
 			print(f"Fichier traité: {file} - {len(articles)} articles extraits")
 		except Exception as e:
 			print(f"Impossible de traiter le fichier {file}, erreur: {e}")
-
-	return all_articles
+	
+	sans_doublon = []
+	seen_id = set()
+	
+	for article in all_articles:
+		if article.id not in seen_id:
+			sans_doublon.append(article)
+			seen_id.add(article.id)
+	
+	return sans_doublon
 
 def main():
 	"""Gère l'entrée utilisateur avec des arguments Bash pour le parcours et le filtrage"""
