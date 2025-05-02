@@ -12,6 +12,7 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
 from bertopic.vectorizers import ClassTfidfTransformer
 from bertopic.representation import KeyBERTInspired
+import os
 
 #import spacy
 
@@ -49,13 +50,17 @@ def main():
     if args.format == "pickle":
         docs = Corpus.load_pickle(args.file)
 
-    docs = [article for article in docs.articles if article.description != None]
+    docs = [article for article in docs.articles if article.description != None and article.categories != []]
 
-    classes = [article.categories for article in docs if article.description != None]
+    classes_categories = [article.categories for article in docs if article.description != None and article.categories != []]
+
+    classes_sources = [article.source for article in docs if article.description != None and article.categories != []]
+
+    docs = [article.description for article in docs if article.description != None and article.categories != []]
+
+    classes_flat_categories = [categorie for categories in classes_categories for categorie in categories]
     
-    docs = [article.description for article in docs if article.description != None]
-
-    classes_flat = [categorie for categories in classes for categorie in categories]
+   
 
    
     #nlp = spacy.load("fr_core_news_md", exclude=['tagger', 'parser', 'ner','attribute_ruler', 'lemmatizer'])
@@ -79,26 +84,40 @@ def main():
     #print(topic_model.get_topic(0))
     print(topic_model.get_document_info(docs))
 
-    topics_per_class = topic_model.topics_per_class(docs, classes=classes_flat)
-    topic_model.visualize_topics_per_class(topics_per_class, top_n_topics=10)
+    topics_per_class_categories = topic_model.topics_per_class(docs, classes=classes_flat_categories)
+    topic_model.visualize_topics_per_class(topics_per_class_categories, top_n_topics=10)
+
+    topics_per_class_sources = topic_model.topics_per_class(docs, classes=classes_sources)
+    topic_model.visualize_topics_per_class(topics_per_class_sources, top_n_topics=10)
+
 
     hierarchical_topics = topic_model.hierarchical_topics(docs)
+
+    inputbasename = os.path.splitext(os.path.basename(args.input_file))[0]
+
+
     fig = topic_model.visualize_hierarchy(hierarchical_topics=hierarchical_topics)
-    fig.write_html("hierarchical_topics.html")
+    fig.write_html(f"hierarchical_topics_{inputbasename}.html")
 
-    fig = topic_model.visualize_topics_per_class(topics_per_class)
-    fig.write_html("topics_per_class.html")
+    #Affiche les topics par classe en considérant les sources comme les classes
+    fig = topic_model.visualize_topics_per_class_sources(topics_per_class_sources)
+    fig.write_html(f"topics_per_class_sources_{inputbasename}.html")
 
+    #Affiche les topics par classe en considérant les catégories comme les classes
+    fig = topic_model.visualize_topics_per_class(topics_per_class_categories)
+    fig.write_html(f"topics_per_class_categories_{inputbasename}.html")
+
+    #Affiche les topics
     fig = topic_model.visualize_topics()
-    fig.write_html("topics.html")
+    fig.write_html(f"topics.html_{inputbasename}.html")
 
     #Affiche dans une map de chaleur
     fig = topic_model.visualize_heatmap()
-    fig.write_html("topics_heatmap.html")
+    fig.write_html(f"topics_heatmap_{inputbasename}.html")
 
     #Affiche les embeddings
     fig = topic_model.visualize_documents(docs, embeddings=embeddings)
-    fig.write_html("topics_embeddings.html")
+    fig.write_html(f"topics_embeddings{inputbasename}.html")
 
 
 if __name__ == "__main__" :

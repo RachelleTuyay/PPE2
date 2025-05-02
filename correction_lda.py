@@ -17,8 +17,8 @@ import argparse
 from gensim.models import Phrases
 from gensim.corpora import Dictionary
 from gensim.models import LdaModel
-#import pyLDAvis
-#import pyLDAvis.gensim_models as gensimvis
+import pyLDAvis
+import pyLDAvis.gensim_models as gensimvis
 from datastructures import name_to_loader, Token
 from nltk.corpus import stopwords
 
@@ -108,10 +108,10 @@ def print_coherence(model, corpus):
 
 
 
-'''def save_html_viz(model, corpus, dictionary, output_path):
+def save_html_viz(model, corpus, dictionary, output_path):
     vis_data = gensimvis.prepare(model, corpus, dictionary)
     with open(output_path, "w") as f:
-        pyLDAvis.save_html(vis_data, f)'''
+        pyLDAvis.save_html(vis_data, f)
 
 
 
@@ -120,8 +120,8 @@ def main(corpus_file:str, format: str, num_topics, output_path: Optional[str]=No
     docs = load_corpus(corpus_file, format)
     docs = add_bigrams(docs)
     c, d, m = build_lda_model(docs, num_topics=num_topics, no_above=noabove, no_below=nobelow)
-    #if output_path is not None:
-        #save_html_viz(m, c, d, output_path)
+    if output_path is not None:
+        save_html_viz(m, c, d, output_path)
     if show_coherence:
         print_coherence(m, c)
 
