@@ -121,7 +121,7 @@ def main():
 
     #Affiche les topics
     fig = topic_model.visualize_topics()
-    fig.write_html(f"topics.html_{inputbasename}.html")
+    fig.write_html(f"topics_{inputbasename}.html")
 
     #Affiche dans une map de chaleur
     fig = topic_model.visualize_heatmap()
@@ -129,7 +129,7 @@ def main():
 
     #Affiche les embeddings
     fig = topic_model.visualize_documents(docs, embeddings=embeddings)
-    fig.write_html(f"topics_embeddings{inputbasename}.html")
+    fig.write_html(f"topics_embeddings_{inputbasename}.html")
 
 
 if __name__ == "__main__" :
