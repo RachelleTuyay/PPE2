@@ -8,7 +8,7 @@ Ce rapport présente les étapes clés du projet, les choix techniques effectué
 
 Voilà un graphe simple qui représente la vue d'ensemble du projet :
 (ajout une img)
-![graph]()
+![graph](img/image.png)
 
 
 
