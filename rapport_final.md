@@ -131,7 +131,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
 ### {- BàO 3 – Analyse -}
 
->>> [!LDA]
+>[!LDA]
 * **Modélisation thématique avec LDA** :
   * Script : `run_lda.py`
   * Outils : Gensim ...
@@ -159,11 +159,11 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   On remarque que la plupart des topics sont de nature politique.
 
   * Problèmes et réflexions critiques.
->>>
+>
 
 **--------------------------------------------------------------------------**
 
->>> [!BERTopic]
+>[!BERTopic]
 
 * **Modélisation thématique avec BERTopic** :
   * Script : `bertopicdemo.py`
@@ -181,7 +181,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   * Problèmes et réflexions critiques :
 
   L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes (on passe de 10000 à 5000 articles). De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
->>>
+>
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
   * Lisibilité, cohérence, qualité des thèmes.
