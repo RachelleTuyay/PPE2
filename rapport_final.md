@@ -42,7 +42,7 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
   * Agrégation des données
   * Suppression des doublons : grâce à la [fonction `supprimer_doublons()`](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_parcours.py?ref_type=heads#L115)
 
-  ```
+  ```python
   def supprimer_doublons(articles):
 	"""Supprime les doublons d'articles basés sur leur l'id"""
 	vus = set()
@@ -56,16 +56,32 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
     ```
 
   * Gestion des encodages et des balises HTML.
-  * Sauvegarde au format avec les filtres choisis :
-    Les filtres au choix sont :
+  * Sauvegarde au format XML, Json et Pickle :
+    Voici des exemples de fichiers après la sauvegarde en fonction des formats :
+      - Sauvegarde en XML [fichier xml](corpus_février.xml)
+      - Sauvegarde en JSON [fichier_json](corpus_février.json)
+      - Sauvegarde en Pickle [fichier_pickle](corpus_février.pickle)
+
+* **Analyse automatique** :
+  * Scripts :
+    - `datastructures.py` : contient les différentes @dataclass afin de stocker des valeurs et créer une structure aux données.
+    - `analyzers.py` :
+  * Représentation des objets à partir de [@dataclass](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/datastructures.py?ref_type=heads#L9-186): `Article`, `Token`, `Corpus`.
+  * Lemmatization et morphosyntaxe via [spacy](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/analyzers.py?ref_type=heads#L74-83), [stanza](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/analyzers.py?ref_type=heads#L60-68) et [Trankit](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/analyzers.py?ref_type=heads#L21-47) (POS, lemme).
+  * Problèmes :
+    - Pour Trankit, il faut version de python 10.0. Cela signifie de créer un nouvel environnement virtuel ayant la version de python adapté afin d'utiliser la librairie Trankit.
+
+* **Filtrage sur métadonnées** :
+  * Création de sous-corpus filtré :
+
+  On avait plusieurs filtres au choix :
       - filtre en fonction des [dates](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L118-141)
       - filtre en fonction des [catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L144-150)
       - filtre en fonction de la [source](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L152-166)
 
+    Tous ces filtres ont été rassemblé dans une nouvelle fonction `filtrage()` :
 
-    Tous ces filtres ont été concaté dans une nouvelle fonction `filtrage()` :
-
-      ```
+      ```ruby
       def filtrage(articles, date_debut=None, date_fin=None, sources=None, categories=None):
         """Applique tous les filtres spécifiés aux articles"""
         articles_filtres = []
@@ -91,38 +107,40 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
                 articles_filtres.append(article)
 
         return articles_filtres
-      ```
+        ```
+  Pour ce projet, le corpus original intitulé `Corpus au 2 avril 2025`. Nous avons décidé de le filtrer en fonction des dates, en conservant que les mois de février et de mars. Ce filtrage nous a semblé pertinent pour analyser l'évolution des thématiques au fil du temps. Ce découpage permet de comparer les dynamiques informationnelles selon les périodes, de repérer des intérêts autour de certains sujets, ou encore de limiter les effets de surreprésentation de thèmes liés à des événements ponctuels. Il renforce ainsi la pertinence de l’analyse thématique en contextualisant les résultats dans une chronologie cohérente.
 
-  Voici des extraits de fichiers après la sauvegarde :
-      - Sauvegarde en XML [fichier xml](corpus_février.xml)
-      - Sauvegarde en JSON [fichier_json](corpus_février.json)
-      - Sauvegarde en pickle [fichier_pickle](corpus_février.pickle)
+  Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
+    ```
+    python3 rss_parcours.py 2025/ glob etree --start-date 2025-02-01 --end-date 2025-02-28 --output corpus02.json
+    ```
+    ```
+    python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json
+    ```
 
-* **Analyse automatique** :
-  * `datastructures.py`, `analyzers.py`
-  * Représentation des objets à partir de @class : `Article`, `Token`, `Corpus`.
-  * Lemmatization et morphosyntaxe via spacy, stanza et Trankit (POS, lemme).
-  * Problèmes :
-    - Pour Trankit, il faut version de python 10.0. Cela signifie de créer un nouvel environnement virtuel ayant la version de python adapté afin d'utiliser la librairie Trankit.
-
-* **Filtrage sur métadonnées** :
-  * Création de sous-corpus thématiques ou par catégorie pour analyse comparative.
+  On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient envrion 5000 articles au total.
 
 ---
 
-## BàO 3 – analyse
+### {- BàO 3 – Analyse -}
 
 * **Modélisation thématique avec LDA** :
   * Script : `run_lda.py`
   * Outils : Gensim ...
   * Prétraitement : stopwords, vectorisation.
-  * Analyse des résultats ...
-  * Problèmes rencontrés ...
+  * Analyse des résultats :
+    - Corpus février :
+    - Corpus mars :
+  * Problèmes et réflexions critiques.
 
 * **Modélisation thématique avec BERTopic** :
   * Script : `bertopicdemo.py`
-  * Méthode : `topics_per_class` selon catégories.
-  * Outils : Sentence-Transformers.
+  * Outils : Gensim ...
+  * Prétraitement : stopwords, vectorisation.
+  * Modèle Hugginface : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  * Analyse des résultats :
+    - Corpus février :
+    - Corpus mars :
   * Problèmes et réflexions critiques.
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
@@ -132,18 +150,33 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 
 ---
 
-## BàO 4 – visualisation
+### {- BàO 4 – Visualisation -}
 
 * **Visualisations** :
   * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`.
   * Mise en forme des sorties pour l'interprétation.
   * Liens vers les fichiers HTML de visualisation.
 * **Rédaction du rapport** :
-  * Résultats obtenus, limites et pertinence des outils utilisés.
-  * Propositions d'améliorations futures :
-    * interface web ...
-    * clustering supervisé ...
-    * suivi temporel des thèmes ...
+  - Corpus février :
+    * Résultats obtenus, limites et pertinence des outils utilisés.
+    * Propositions d'améliorations futures :
+      * interface web ...
+      * clustering supervisé ...
+      * suivi temporel des thèmes ...
+
+  - Corpus mars :
+    * Résultats obtenus, limites et pertinence des outils utilisés.
+    * Propositions d'améliorations futures :
+      * interface web ...
+      * clustering supervisé ...
+      * suivi temporel des thèmes ...
+
+---
+
+## {+ Conclusion +} :
+
+...
+
 
 ---
 
