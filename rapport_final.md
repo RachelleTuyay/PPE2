@@ -6,13 +6,14 @@ Ce projet vise à extraire, enrichir et analyser automatiquement des articles is
 
 Ce rapport présente les étapes clés du projet, les choix techniques effectués, ainsi que les résultats obtenues et leurs limites.
 
-Voilà un graphe simple qui représente la vue d'ensemble du projet :
+> Voilà un graphe simple qui représente la vue d'ensemble du projet :
 
 ![graph](img/image.png)
 
-(source : diapo "07-topics-modeling1.pdf")
+  *(source : diapo "07-topics-modeling1.pdf")*
 
 
+---
 ---
 
 ### {- BàO 1 – gestion des données et du code -}
@@ -34,6 +35,7 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
   * Débogage et relecture collaboratif, gestion des dépendances et erreurs courantes.
   * Gestion du code avec Git avancé : historique Git, conflits, évolution des scripts.
 
+---
 ---
 
 ### {- BàO 2 – enrichir les données -}
@@ -82,8 +84,6 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
       - filtre en fonction des [catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L144-150).
       - filtre en fonction de la [source](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L152-166).
 
-
-
   Tous ces filtres ont été rassemblé dans une nouvelle fonction `filtrage()` :
 
   ```python
@@ -116,34 +116,36 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
   Pour ce projet, le corpus original intitulé `Corpus au 2 avril 2025`. Nous avons décidé de le filtrer en fonction des dates, en conservant que les mois de février et de mars. Ce filtrage nous a semblé pertinent pour analyser l'évolution des thématiques au fil du temps. Ce découpage permet de comparer les dynamiques informationnelles selon les périodes, de repérer des intérêts autour de certains sujets, ou encore de limiter les effets de surreprésentation de thèmes liés à des événements ponctuels. Il renforce ainsi la pertinence de l’analyse thématique en contextualisant les résultats dans une chronologie cohérente.
 
-  Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
-    ```
-    python3 rss_parcours.py 2025/ glob etree --start-date 2025-02-01 --end-date 2025-02-28 --output corpus02.json
-    ```
-    ```
-    python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json
-    ```
+  >Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
+      ```
+      python3 rss_parcours.py 2025/ glob etree --start-date 2025-02-01 --end-date 2025-02-28 --output corpus02.json
+      ```
+      ```
+      python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json
+      ```
 
-  On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient envrion 5000 articles au total.
+  On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient envrion 10000 articles au total.
 
+---
 ---
 
 ### {- BàO 3 – Analyse -}
 
+>>> [!LDA]
 * **Modélisation thématique avec LDA** :
-
   * Script : `run_lda.py`
   * Outils : Gensim ...
   * Prétraitement : stopwords, vectorisation.
-  * Analyse des résultats :
-    - Corpus février :
+
+* **Analyse des résultats** :
+    - **Corpus février** :
 
 
-    - Corpus mars :
+    - **Corpus mars** :
 
    Analysons les résultats que nous avons obtenu avec le script LDA. Nous avons choisi de garder les dix topics les plus fréquents pour les deux sous-corpus.
 
-  Voici notre visualisation LDA pour le corpus de mars :
+  > Voici notre visualisation LDA pour le corpus de mars :
   ![image](./img/visu_lda_mars.png)
 
   Nous voyons ici les différents topics, et la distance qu'il y a entre chacun d'entre eux. Nous voyons sur l'image le topic 4, qui semble représenter un sujet sportif comme on peut le voir avec les termes "ligue_champion", "PSG", "Tennis", etc. Nous avons le terme "marine_pen" qui semble être une valeur aberrante. On observe que certains termes sont plus spécifiques que d'autres : par exemple "ligue_champion" est plus spécifique que "dimanche" car on voit que pour le premier terme, la fréquence du terme au sein du topic est quasi la même que la fréquence total tout topic confondu, contrairement à "dimanche" dont la fréquence relative au topic est égale à moins de la moitié de la fréquence total du terme.
@@ -157,24 +159,36 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   On remarque que la plupart des topics sont de nature politique.
 
   * Problèmes et réflexions critiques.
+>>>
+
+**--------------------------------------------------------------------------**
+
+>>> [!BERTopic]
 
 * **Modélisation thématique avec BERTopic** :
   * Script : `bertopicdemo.py`
   * Outils : Gensim ...
   * Prétraitement : stopwords, vectorisation.
   * Modèle Hugginface : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-  * Analyse des résultats :
-    - Corpus février :
-    - Corpus mars :
-  * Problèmes et réflexions critiques.
 
-  L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes. De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
+* **Analyse des résultats** :
+
+    - **Corpus février** :
+
+
+    - **Corpus mars** :
+
+  * Problèmes et réflexions critiques :
+
+  L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes (on passe de 10000 à 5000 articles). De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
+>>>
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
   * Lisibilité, cohérence, qualité des thèmes.
   * Sur- ou sous-représentation de certains sujets.
   * Réflexion sur l’impact du prétraitement.
 
+---
 ---
 
 ### {- BàO 4 – Visualisation -}
@@ -183,15 +197,16 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`.
   * Mise en forme des sorties pour l'interprétation.
   * Liens vers les fichiers HTML de visualisation.
+
 * **Rédaction du rapport** :
-  - Corpus février :
+  - **Corpus février** :
     * Résultats obtenus, limites et pertinence des outils utilisés.
     * Propositions d'améliorations futures :
       * interface web ...
       * clustering supervisé ...
       * suivi temporel des thèmes ...
 
-  - Corpus mars :
+  - **Corpus mars** :
     * Résultats obtenus, limites et pertinence des outils utilisés.
 
     Voici nos différentes visualisations obtenues pour le corpus de mars :
@@ -215,14 +230,15 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   * [Visualisation des topics par classe selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
 
 
-  - Comparaison entre les deux sous-corpus :
+* **Comparaison entre les deux sous-corpus** :
 
 
-  * Propositions d'améliorations futures :
-    * interface web ...
-    * clustering supervisé ...
-    * suivi temporel des thèmes ...
+* Propositions d'améliorations futures :
+  * interface web ...
+  * clustering supervisé ...
+  * suivi temporel des thèmes ...
 
+---
 ---
 
 ## {+ Conclusion +} :
