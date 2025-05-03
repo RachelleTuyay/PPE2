@@ -58,7 +58,19 @@ def main():
 
     docs = [article.description for article in docs if article.description != None and article.categories != []]
 
-    classes_flat_categories = [categorie for categories in classes_categories for categorie in categories]
+    classes_flat_categories = []
+
+    for categories in classes_categories :
+        if type(categories) == list :
+
+            liststring= " ".join(ele for ele in categories)
+                
+            classes_flat_categories.append(liststring)
+
+        else :
+            classes_flat_categories.append(categories)
+
+  
     
    
 
@@ -93,14 +105,14 @@ def main():
 
     hierarchical_topics = topic_model.hierarchical_topics(docs)
 
-    inputbasename = os.path.splitext(os.path.basename(args.input_file))[0]
+    inputbasename = os.path.splitext(os.path.basename(args.file))[0]
 
 
     fig = topic_model.visualize_hierarchy(hierarchical_topics=hierarchical_topics)
     fig.write_html(f"hierarchical_topics_{inputbasename}.html")
 
     #Affiche les topics par classe en considérant les sources comme les classes
-    fig = topic_model.visualize_topics_per_class_sources(topics_per_class_sources)
+    fig = topic_model.visualize_topics_per_class(topics_per_class_sources)
     fig.write_html(f"topics_per_class_sources_{inputbasename}.html")
 
     #Affiche les topics par classe en considérant les catégories comme les classes
