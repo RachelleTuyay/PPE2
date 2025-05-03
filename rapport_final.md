@@ -131,12 +131,31 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 ### {- BàO 3 – Analyse -}
 
 * **Modélisation thématique avec LDA** :
+
   * Script : `run_lda.py`
   * Outils : Gensim ...
   * Prétraitement : stopwords, vectorisation.
   * Analyse des résultats :
     - Corpus février :
+
+
     - Corpus mars :
+
+   Analysons les résultats que nous avons obtenu avec le script LDA. Nous avons choisi de garder les dix topics les plus fréquents pour les deux sous-corpus.
+
+  Voici notre visualisation LDA pour le corpus de mars :
+  ![image](./img/visu_lda_mars.png)
+
+  Nous voyons ici les différents topics, et la distance qu'il y a entre chacun d'entre eux. Nous voyons sur l'image le topic 4, qui semble représenter un sujet sportif comme on peut le voir avec les termes "ligue_champion", "PSG", "Tennis", etc. Nous avons le terme "marine_pen" qui semble être une valeur aberrante. On observe que certains termes sont plus spécifiques que d'autres : par exemple "ligue_champion" est plus spécifique que "dimanche" car on voit que pour le premier terme, la fréquence du terme au sein du topic est quasi la même que la fréquence total tout topic confondu, contrairement à "dimanche" dont la fréquence relative au topic est égale à moins de la moitié de la fréquence total du terme.
+
+  ![image](./img/visu_lda_mars_02.png)
+
+  Dans cette image, on voit le topic 1. Même en mettant lambda à 0 pour essayer d'avoir les termes les plus spécifiques, il est difficile de dégager un thème dans ce topic. Il a l'air d'être lié à la culture et l'art, mais on a des mots comme "médical" qui sont surprenants.
+
+  Voici le fichier texte comprenant les dix premiers topics : [fichier txt](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_lda_mars.txt?ref_type=heads)
+
+  On remarque que la plupart des topics sont de nature politique.
+
   * Problèmes et réflexions critiques.
 
 * **Modélisation thématique avec BERTopic** :
