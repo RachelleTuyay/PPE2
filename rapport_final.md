@@ -7,7 +7,6 @@ Ce projet vise à extraire, enrichir et analyser automatiquement des articles is
 Ce rapport présente les étapes clés du projet, les choix techniques effectués, ainsi que les résultats obtenues et leurs limites.
 
 Voilà un graphe simple qui représente la vue d'ensemble du projet :
-(ajout une img)
 ![graph](img/image.png)
 
 (source : diapo "07-topics-modeling1.pdf")
@@ -37,6 +36,8 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 
 ### {- BàO 2 – enrichir les données -}
 
+La seconde étape est d'enrichir les données avec les sorties de différents analyseurs morphosyntaxiques : `SpaCy`, `Stanza` et `Trankit`. Ces outils permettent d’extraire des informations linguistiques telles que les lemmes, les catégories grammaticales, etc. Ces résultats permettent de construire une représentation plus solide et précise des structures linguistiques contenues dans les données.
+
 * **Structure initiale des fichiers RSS**.
 * **Nettoyage et prétraitement** :
   * Agrégation des données
@@ -55,7 +56,6 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 	return uniques
     ```
 
-  * Gestion des encodages et des balises HTML.
   * Sauvegarde au format XML, Json et Pickle :
     Voici des exemples de fichiers après la sauvegarde en fonction des formats :
       - Sauvegarde en XML [fichier xml](corpus_février.xml)
@@ -65,7 +65,7 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 * **Analyse automatique** :
   * Scripts :
     - `datastructures.py` : contient les différentes @dataclass afin de stocker des valeurs et créer une structure aux données.
-    - `analyzers.py` :
+    - `analyzers.py` : enrichi avec le résultat de l'analyse.
   * Représentation des objets à partir de [@dataclass](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/datastructures.py?ref_type=heads#L9-186): `Article`, `Token`, `Corpus`.
   * Lemmatization et morphosyntaxe via [spacy](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/analyzers.py?ref_type=heads#L74-83), [stanza](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/analyzers.py?ref_type=heads#L60-68) et [Trankit](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/analyzers.py?ref_type=heads#L21-47) (POS, lemme).
   * Problèmes :
@@ -76,12 +76,15 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 
   On avait plusieurs filtres au choix :
       - filtre en fonction des [dates](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L118-141)
+
       - filtre en fonction des [catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L144-150)
+
       - filtre en fonction de la [source](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L152-166)
 
-    Tous ces filtres ont été rassemblé dans une nouvelle fonction `filtrage()` :
 
-      ```ruby
+  Tous ces filtres ont été rassemblé dans une nouvelle fonction `filtrage()` :
+
+  ```python
       def filtrage(articles, date_debut=None, date_fin=None, sources=None, categories=None):
         """Applique tous les filtres spécifiés aux articles"""
         articles_filtres = []
@@ -107,7 +110,8 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
                 articles_filtres.append(article)
 
         return articles_filtres
-        ```
+    ```
+
   Pour ce projet, le corpus original intitulé `Corpus au 2 avril 2025`. Nous avons décidé de le filtrer en fonction des dates, en conservant que les mois de février et de mars. Ce filtrage nous a semblé pertinent pour analyser l'évolution des thématiques au fil du temps. Ce découpage permet de comparer les dynamiques informationnelles selon les périodes, de repérer des intérêts autour de certains sujets, ou encore de limiter les effets de surreprésentation de thèmes liés à des événements ponctuels. Il renforce ainsi la pertinence de l’analyse thématique en contextualisant les résultats dans une chronologie cohérente.
 
   Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
@@ -174,9 +178,6 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 ---
 
 ## {+ Conclusion +} :
-
-...
-
 
 ---
 
