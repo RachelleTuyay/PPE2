@@ -7,6 +7,7 @@ Ce projet vise à extraire, enrichir et analyser automatiquement des articles is
 Ce rapport présente les étapes clés du projet, les choix techniques effectués, ainsi que les résultats obtenues et leurs limites.
 
 Voilà un graphe simple qui représente la vue d'ensemble du projet :
+
 ![graph](img/image.png)
 
 (source : diapo "07-topics-modeling1.pdf")
@@ -57,6 +58,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 	return uniques
     ```
 
+
   * Sauvegarde au format XML, Json et Pickle :
     Voici des exemples de fichiers après la sauvegarde en fonction des formats :
       - Sauvegarde en XML [fichier xml](corpus_février.xml)
@@ -79,6 +81,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
       - filtre en fonction des [dates](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L118-141).
       - filtre en fonction des [catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L144-150).
       - filtre en fonction de la [source](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L152-166).
+
 
 
   Tous ces filtres ont été rassemblé dans une nouvelle fonction `filtrage()` :
@@ -145,6 +148,8 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
     - Corpus février :
     - Corpus mars :
   * Problèmes et réflexions critiques.
+
+  L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes. De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `"\[\['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']"` devienne `"\['Economie', 'Immigration', 'Social', 'Culture']"`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `"\['Economie Immigration Social', 'Economie', 'Culture']"`.
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
   * Lisibilité, cohérence, qualité des thèmes.
