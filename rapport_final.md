@@ -93,7 +93,8 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
       ```
 
   Voici des extraits de fichiers après la sauvegarde :
-      - XML :
+
+      - Sauvegarde en XML :
 
       ```
         <articles>
@@ -117,7 +118,8 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
           ...
         </articles>
       ```
-      - JSON :
+
+      - Sauvegarde en JSON :
 
       ```
         {
@@ -145,7 +147,7 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
               {...},
         }
       ```
-      - pickle (../main/sous-corpus_février/corpus_février.pickle)
+      - Sauvegarde en pickle (../main/sous-corpus_février/corpus_février.pickle)
 
 * **Analyse automatique** :
   * `datastructures.py`, `analyzers.py`
