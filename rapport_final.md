@@ -129,69 +129,8 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 ---
 ---
 
-### {- BàO 3 – Analyse -}
 
-> **LDA**
-* **Modélisation thématique avec LDA** :
-  * Script : `run_lda.py`
-  * Outils : Gensim ...
-  * Prétraitement : stopwords, vectorisation.
-
-* **Analyse des résultats** :
-    - **Corpus février** :
-
-
-    - **Corpus mars** :
-
-   Analysons les résultats que nous avons obtenu avec le script LDA. Nous avons choisi de garder les dix topics les plus fréquents pour les deux sous-corpus.
-
-  Voici notre visualisation LDA pour le corpus de mars :
-  ![image](./img/visu_lda_mars.png)
-
-  Nous voyons ici les différents topics, et la distance qu'il y a entre chacun d'entre eux. Nous voyons sur l'image le topic 4, qui semble représenter un sujet sportif comme on peut le voir avec les termes "ligue_champion", "PSG", "Tennis", etc. Nous avons le terme "marine_pen" qui semble être une valeur aberrante. On observe que certains termes sont plus spécifiques que d'autres : par exemple "ligue_champion" est plus spécifique que "dimanche" car on voit que pour le premier terme, la fréquence du terme au sein du topic est quasi la même que la fréquence total tout topic confondu, contrairement à "dimanche" dont la fréquence relative au topic est égale à moins de la moitié de la fréquence total du terme.
-
-  ![image](./img/visu_lda_mars_02.png)
-
-  Dans cette image, on voit le topic 1. Même en mettant lambda à 0 pour essayer d'avoir les termes les plus spécifiques, il est difficile de dégager un thème dans ce topic. Il a l'air d'être lié à la culture et l'art, mais on a des mots comme "médical" qui sont surprenants.
-
-  Voici le fichier texte comprenant les dix premiers topics : [fichier txt](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_lda_mars.txt?ref_type=heads)
-
-  On remarque que la plupart des topics sont de nature politique.
-
-  * Problèmes et réflexions critiques.
-
-
-**--------------------------------------------------------------------------**
-
-> **BERTopic**
-
-* **Modélisation thématique avec BERTopic** :
-  * Script : `bertopicdemo.py`
-  * Outils : Gensim ...
-  * Prétraitement : stopwords, vectorisation.
-  * Modèle Hugginface : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-
-* **Analyse des résultats** :
-
-    - **Corpus février** :
-
-
-    - **Corpus mars** :
-
-  * Problèmes et réflexions critiques :
-
-  L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes (on passe de 10000 à 5000 articles). De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
-
-
-* **Comparaison critique des modèles (LDA vs BERTopic)** :
-  * Lisibilité, cohérence, qualité des thèmes.
-  * Sur- ou sous-représentation de certains sujets.
-  * Réflexion sur l’impact du prétraitement.
-
----
----
-
-### {- BàO 4 – Visualisation -}
+### {- BàO 3 – Visualisation -}
 
 * **Visualisations** :
   * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`.
@@ -238,6 +177,69 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   * clustering supervisé ...
   * suivi temporel des thèmes ...
 
+
+---
+---
+
+### {- BàO 4 – Analyse -}
+
+> [!LDA]
+> * **Modélisation thématique avec LDA** :
+  * Script : `run_lda.py`
+  * Outils : Gensim ...
+  * Prétraitement : stopwords, vectorisation.
+
+* **Analyse des résultats** :
+    - **Corpus février** :
+
+
+    - **Corpus mars** :
+
+   Analysons les résultats que nous avons obtenu avec le script LDA. Nous avons choisi de garder les dix topics les plus fréquents pour les deux sous-corpus.
+
+  > Voici notre visualisation LDA pour le corpus de mars :
+  ![image](./img/visu_lda_mars.png)
+
+  Nous voyons ici les différents topics, et la distance qu'il y a entre chacun d'entre eux. Nous voyons sur l'image le topic 4, qui semble représenter un sujet sportif comme on peut le voir avec les termes "ligue_champion", "PSG", "Tennis", etc. Nous avons le terme "marine_pen" qui semble être une valeur aberrante. On observe que certains termes sont plus spécifiques que d'autres : par exemple "ligue_champion" est plus spécifique que "dimanche" car on voit que pour le premier terme, la fréquence du terme au sein du topic est quasi la même que la fréquence total tout topic confondu, contrairement à "dimanche" dont la fréquence relative au topic est égale à moins de la moitié de la fréquence total du terme.
+
+  ![image](./img/visu_lda_mars_02.png)
+
+  Dans cette image, on voit le topic 1. Même en mettant lambda à 0 pour essayer d'avoir les termes les plus spécifiques, il est difficile de dégager un thème dans ce topic. Il a l'air d'être lié à la culture et l'art, mais on a des mots comme "médical" qui sont surprenants.
+
+  Voici le fichier texte comprenant les dix premiers topics : [fichier txt](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_lda_mars.txt?ref_type=heads)
+
+  On remarque que la plupart des topics sont de nature politique.
+
+  * Problèmes et réflexions critiques.
+>
+
+**--------------------------------------------------------------------------**
+
+> [!BERTopic]
+
+> * **Modélisation thématique avec BERTopic** :
+  * Script : `bertopicdemo.py`
+  * Outils : Gensim ...
+  * Prétraitement : stopwords, vectorisation.
+  * Modèle Hugginface : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+* **Analyse des résultats** :
+
+    - **Corpus février** :
+
+
+    - **Corpus mars** :
+
+  * Problèmes et réflexions critiques :
+
+  L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes (on passe de 10000 à 5000 articles). De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
+>
+
+* **Comparaison critique des modèles (LDA vs BERTopic)** :
+  * Lisibilité, cohérence, qualité des thèmes.
+  * Sur- ou sous-représentation de certains sujets.
+  * Réflexion sur l’impact du prétraitement.
+
 ---
 ---
 
@@ -250,5 +252,6 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 * Extraits de code avec commentaires (liens GitLab).
 * Graphique Git des contributions.
 * Fichier `requirements.txt` avec les bibliothèques utilisées.
+
 
 
