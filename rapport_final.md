@@ -280,7 +280,24 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 * **Analyse des résultats** :
 
     - **Corpus février** :
+  Pour le corpus de février, nous avons 81 topics avec BERTopic.
 
+  Voici les clusters pour les topics de février :
+
+  ![image](./img/topics_fevr.png)
+
+  Dans l'Intertopic Distance Map, on observe plusieurs regroupements distincts de topics qui correspondent à des domaines thématiques spécifiques.
+
+  Le cluster en bas à gauche est clairement lié au domaine sportif, comme en témoignent les mots-clés du Topic 0 (« ligue », « champions », « barrage », « club ») ou encore du Topic 35, davantage lié au sport économique et aux investissements (« euros », « investir », « actionnaires »). Ces topics sont proches spatialement, indiquant une certaine similarité sémantique, même si leurs tailles varient fortement (par exemple Topic 0 avec une taille de 155, et Topic 35 seulement 14).
+
+  Le cluster en haut à gauche est davantage orienté vers la technologie et l’intelligence artificielle, comme le montre le Topic 1 (« artificielle », « intelligence », « IA », « sommet », « décryptage »). Ce cluster est spatialement isolé, indiquant une spécificité sémantique plus forte de ce groupe.
+
+  Au centre, on distingue un regroupement dense de petits topics dont les tailles et contenus sont variés. Cela peut indiquer une zone de thèmes plus diversifiés ou plus généraux, moins facilement catégorisables, mais traitant d’actualités ou de sujets transversaux.
+
+  Enfin, la dispersion de certains topics (comme ceux situés à l'extrême gauche ou en bas à droite) souligne des thématiques mal intégrées ou hétérogènes, qui mériteraient peut-être d’être regroupées différemment (par exemple des mélanges entre des sujets météorologiques et culturels, ou encore économiques et sociaux).
+
+  Cette visualisation met en évidence la capacité du modèle à regrouper de façon cohérente les thèmes dominants du corpus, tout en révélant certaines limites ou zones d’ambiguïté dans le clustering automatique.
+  
   Voici un aperçu de l’analyse de hierarchical clustering sur les topics du corpus de février:
 
   ![image](./img/Hierarchical-Clustering-fevr.png)
@@ -337,8 +354,17 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 
 
 **--------------------------------------------------------------------------**
-
   - **Comparaison entre les deux sous-corpus** :
+
+  Les résultats de BERTopic montrent une nette différence entre les deux corpus en termes de structure thématique. Le corpus de février contient 81 topics, tandis que celui de mars en comprend 142, ce qui indique une plus grande diversité des sujets traités en mars.
+
+  Dans le corpus de février, les clusters sont bien structurés autour de domaines thématiques clairs. Au centre de la carte des distances inter-thématiques, un regroupement dense et hétérogène montre des sujets plus transversaux ou d’actualité générale. Quelques topics mal intégrés apparaissent également, révélant des limites dans la catégorisation automatique.
+
+  En comparaison, le corpus de mars présente une carte bien plus dense et éclatée, avec plus de topics que février. Les clusters dominants concernent également le sport et les articles culturels/artistiques. Toutefois, des regroupements incohérents apparaissent : par exemple, un cluster à gauche mélange des articles sur les intempéries et les défilés, montrant une difficulté du modèle à distinguer ces contextes sémantiques.
+
+  La heatmap des similarités confirme néanmoins la qualité de l’analyse : certains topics proches (par ex. jardin/plante) sont bien regroupés, tandis que d’autres sémantiquement éloignés (prison/fleur) sont clairement séparés.
+
+  En conclusion, la comparaison entre les deux sous-corpus révèle une nette différence dans la densité, la diversité thématique et la structuration des topics. Le corpus de mars se distingue par un nombre plus élevé de topics et une organisation plus complexe, reflétant une plus grande hétérogénéité des contenus. En revanche, le corpus de février présente une structuration plus claire et des regroupements thématiques plus cohérents, mais une diversité plus limitée.
 
 
   * Problèmes et réflexions critiques :
@@ -349,9 +375,15 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
-  * Lisibilité, cohérence, qualité des thèmes.
-  * Sur- ou sous-représentation de certains sujets.
-  * Réflexion sur l’impact du prétraitement.
+  * Lisibilité, cohérence, qualité des thèmes:
+
+  BERTopic offre des résultats plus clairs et plus détaillés. Grâce à l’utilisation de modèles de langage comme BERT, il permet de regrouper les documents selon le sens des phrases, ce qui améliore la qualité des thèmes identifiés. Les visualisations comme les Intertopic Distance Maps ou les dendrogrammes montrent des clusters denses et bien structurés, notamment dans les domaines sportifs, culturels et sociaux. À l’inverse, LDA repose sur un modèle statistique plus ancien, basé sur le bag-of-words. Cela limite sa capacité à capturer le contexte sémantique, et certains de ses résultats paraissent moins précis ou mélangent plusieurs sujets dans un même thème.
+  * Sur- ou sous-représentation de certains sujets: 
+
+  LDA demande de fixer le nombre de topics à l’avance, ce qui peut entraîner une sous-représentation de certains sujets. BERTopic détermine automatiquement les clusters grâce à HDBSCAN, ce qui permet de mieux couvrir les thèmes émergents ou spécifiques. Cependant, un inconvénient de BERTopic est que chaque document n’est associé qu’à un seul topic, ce qui ne reflète pas toujours la réalité des textes. 
+  * Réflexion sur l’impact du prétraitement :
+
+  Enfin, en ce qui concerne le prétraitement, LDA exige un nettoyage important du texte en amont (stopwords, lemmatisation), tandis que BERTopic est plus souple : l'encodage peut se faire sans traitement, et seules les étapes de représentation du thème nécessitent un nettoyage plus classique
 
 ---
 ---
