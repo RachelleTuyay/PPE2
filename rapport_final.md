@@ -134,13 +134,12 @@ L’étape suivante consiste à explorer le topic modeling, une méthode qui per
 - BERTopic : Les documents similaires proviennent de sujets communs, à partir desquels on extrait les termes les plus spécifiques. BERTopc se repose sur une technique de modélisation thématique qui adapte et transforme le c-TF-IDF afin de former des clusters denses. Elle permet ainsi de générer des sujets facilement interprétables tout en préservant les mots clés significatifs dans les descriptions.
 
 BERTopic peut être considéré comme une séquence d'étapes pour créer ses représentations de topics. Ce processus comporte cinq étapes:
-![image](img/bert.png)
-  *(source : [https://maartengr.github.io/BERTopic/algorithm/algorithm.html](https://maartengr.github.io/BERTopic/algorithm/algorithm.html))*
+
+![image](img/bert.png) *(source : [https://maartengr.github.io/BERTopic/algorithm/algorithm.html](https://maartengr.github.io/BERTopic/algorithm/algorithm.html))*
 
 * **Visualisation par corpus** :
 
   - **Corpus février** :
-    * Résultats obtenus, limites et pertinence des outils utilisés.
 
     Voici nos différentes visualisations obtenues pour le corpus de février :
     * [Visualisation des topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
@@ -151,7 +150,6 @@ BERTopic peut être considéré comme une séquence d'étapes pour créer ses re
     * [Visualisation des topics par classe de corpus février selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_sources_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
 
   - **Corpus mars** :
-    * Résultats obtenus, limites et pertinence des outils utilisés.
 
     Voici nos différentes visualisations obtenues pour le corpus de mars :
     * [Visualisation des topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_corpus_mars_analyzed.html?ref_type=heads)
@@ -179,7 +177,7 @@ BERTopic peut être considéré comme une séquence d'étapes pour créer ses re
 
 ### {- BàO 4 – Analyse -}
 
-
+Dans cette section, nous analysons plusieurs corpus afin d’en dégager les grandes thématiques, les différences lexicales et les spécificités de chacun. Grâce à des méthodes d’analyse automatique, notamment le topic modeling, nous identifions les sujets les plus fréquents et comparons leur répartition entre les différents corpus. Cette approche permet de mieux comprendre le contenu de chaque ensemble de textes, tout en mettant en lumière les points communs et les différences qui les caractérisent.
 
 > **LDA**
 
@@ -276,8 +274,8 @@ BERTopic peut être considéré comme une séquence d'étapes pour créer ses re
 * **Modélisation thématique avec BERTopic** :
   * Script : `bertopicdemo.py`
   * Outils : Gensim ...
-  * Prétraitement : stopwords, vectorisation.
-  * Modèle Hugginface : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  * Prétraitement : Extraction des embeddings, réduire la dimensionnalité, regrouper les embeddings réduites, tokenisation + supprimer des stopwords, finetunning (optionnel).
+  * Modèle Hugging face : [sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)
 
 * **Analyse des résultats** :
 
@@ -345,6 +343,7 @@ BERTopic peut être considéré comme une séquence d'étapes pour créer ses re
 * Extraits de code avec commentaires (liens GitLab).
 * Graphique Git des contributions.
 * Fichier `requirements.txt` avec les bibliothèques utilisées.
+
 
 
 
