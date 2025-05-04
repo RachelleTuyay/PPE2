@@ -134,7 +134,7 @@ L’étape suivante consiste à explorer le topic modeling, une méthode qui per
 - BERTopic : Les documents similaires proviennent de sujets communs, à partir desquels on extrait les termes les plus spécifiques. BERTopc se repose sur une technique de modélisation thématique qui adapte et transforme le c-TF-IDF afin de former des clusters denses. Elle permet ainsi de générer des sujets facilement interprétables tout en préservant les mots clés significatifs dans les descriptions.
 
 BERTopic peut être considéré comme une séquence d'étapes pour créer ses représentations de topics. Ce processus comporte cinq étapes:
-![image](bert.png)
+![image](img/bert.png)
   *(source : [https://maartengr.github.io/BERTopic/algorithm/algorithm.html](https://maartengr.github.io/BERTopic/algorithm/algorithm.html))*
 
 * **Visualisation par corpus** :
