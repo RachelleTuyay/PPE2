@@ -79,10 +79,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 * **Filtrage sur métadonnées** :
   * Création de sous-corpus filtré :
 
-  On avait plusieurs filtres au choix :
-      - filtre en fonction des [dates](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L118-141).
-      - filtre en fonction des [catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L144-150).
-      - filtre en fonction de la [source](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L152-166).
+  On avait plusieurs filtres au choix : filtre en fonction des [dates](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L118-141), des [catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L144-150) et la [source](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/rss_reader.py?ref_type=heads#L152-166).
 
   Tous ces filtres ont été rassemblé dans une nouvelle fonction `filtrage()` :
 
@@ -118,6 +115,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
   Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
      ```python3 rss_parcours.py 2025/ glob etree --start-date 2025-02-01 --end-date 2025-02-28 --output corpus02.json```
+
       ```python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json```
 
   On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient environ 10000 articles au total.
@@ -354,6 +352,7 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 
 
 **--------------------------------------------------------------------------**
+
   - **Comparaison entre les deux sous-corpus** :
 
   Les résultats de BERTopic montrent une nette différence entre les deux corpus en termes de structure thématique. Le corpus de février contient 81 topics, tandis que celui de mars en comprend 142, ce qui indique une plus grande diversité des sujets traités en mars.
@@ -390,7 +389,7 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 
 ## {+ Conclusion +} :
 
-Cette analyse a permis de mieux comprendre la manière dont des méthodes de modélisation thématique peuvent aider à structurer et interpréter de grands volumes de textes. En s’appuyant sur deux approches différentes – LDA et BERTopic – nous avons pu explorer la richesse des sujets présents dans les corpus étudiés, ainsi que la façon dont ces sujets s’organisent entre eux.
+Cette analyse nous a permis de mieux comprendre la manière dont des méthodes de modélisation thématique peuvent aider à structurer et interpréter de grands volumes de textes. En s’appuyant sur deux approches différentes – LDA et BERTopic – nous avons pu explorer la richesse des sujets présents dans les corpus étudiés, ainsi que la façon dont ces sujets s’organisent entre eux.
 
 Globalement, les résultats mettent en évidence que la diversité des contenus, leur complexité et leur structuration évoluent d’un corpus à l’autre. Certains thèmes ressortent clairement, comme le sport, la culture ou encore la politique, tandis que d’autres apparaissent plus diffus, parfois mélangés à des sujets proches. Cette variation reflète à la fois la nature du contenu médiatique analysé et les limites des outils employés pour en extraire des thématiques cohérentes.
 
