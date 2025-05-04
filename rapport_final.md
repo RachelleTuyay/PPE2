@@ -140,6 +140,25 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 * **Rédaction du rapport** :
   - **Corpus février** :
     * Résultats obtenus, limites et pertinence des outils utilisés.
+
+    Voici nos différentes visualisations obtenues pour le corpus de février :
+    * [Visualisation des topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+    * [Visualisation hiérarchique des topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/hierarchical_topics_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+    * [Visualisation de tous les documents et leur topic](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_embeddings_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+    * [Visualisation de la heatmap des similarités entre topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_heatmap_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+
+    Voici un aperçu de l’analyse de hierarchical clustering sur les topics du corpus de février:
+
+  ![image](./img/Hierarchical-Clustering-fevr.png)
+    Ce dendrogramme nous permet de visualiser les similarités sémantiques entre les différents topics extraits par BERTopic. Chaque ligne horizontale correspond à un topic identifié par un numéro et des mots-clés représentatifs. Les points de jonction (nœuds noirs) indiquent le regroupement de deux topics en un cluster plus large. 
+    
+    En survolant ces nœuds, on peut voir apparaître un nom de regroupement généré automatiquement, ce qui permet d’interpréter rapidement le thème global du cluster. Par exemple, les topics `66_alpes_edgar_grospiron` et `38_ski_2030_olympique` sont regroupés très tôt avec l’étiquette `2030_alpes_jo_comité_ski`, suggérant une forte proximité lexicale autour des Jeux Olympiques d’hiver. 
+    
+    Ce type de visualisation aide donc à mieux comprendre la structure hiérarchique des sujets traités dans le corpus, à identifier les thèmes centraux (branches courtes) ainsi que les sujets plus marginaux ou spécifiques (branches longues). 
+
+    * [Visualisation des topics par classe de corpus février selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_categories_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+    * [Visualisation des topics par classe de corpus février selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_sources_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+
     * Propositions d'améliorations futures :
       * interface web ...
       * clustering supervisé ...
@@ -165,8 +184,8 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   A l'inverse, le topic 28 (prison_mikheïl_condamné) est très peu similaire au topic 67, avec un score de similarité de 0,48, ce qui est logique étant donné l'éloignement sémantique entre "prison" et "fleurs".
   Cette heatmap nous permet de voir que BERTopic a plutôt bien analysé les topics.
 
-  * [Visualisation des topics par classe selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_categories_corpus_mars_analyzed.html?ref_type=heads)
-  * [Visualisation des topics par classe selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
+  * [Visualisation des topics par classe de corpus mars selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_categories_corpus_mars_analyzed.html?ref_type=heads)
+  * [Visualisation des topics par classe de corpus mars selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
 
 
 * **Comparaison entre les deux sous-corpus** :
@@ -190,7 +209,38 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   * Prétraitement : stopwords, vectorisation.
 
 * **Analyse des résultats** :
+    
+     Analysons les résultats que nous avons obtenu avec le script LDA. Nous avons choisi de garder les dix topics les plus fréquents pour les deux sous-corpus.
     - **Corpus février** :
+    
+    Voici notre visualisation LDA pour le corpus de février :
+  ![image](./img/visu_lda_fevr.png)
+
+
+    Le résultat de visualisation LDA montre ici un modèle à 10 topics, dans lequel le topic 1 représente 12,2% des tokens du corpus – ce qui en fait un des sujets dominants. Sur la carte de gauche, nous observons que le topic 1 est regroupé avec les topics 2, 3, 5, 6, 8 et 9, ce qui suggère une proximité sémantique. Le topic 10, isolé en haut à gauche, semble thématiquement distinct. Le topic 4 est également un peu éloigné, indiquant une certaine indépendance thématique.
+
+    Le curseur λ (lambda) contrôle le critère de sélection des mots-clés :
+
+    λ = 1 (réglage actuel) : les mots sont classés selon leur fréquence dans le topic (représentativité interne) ;
+
+    λ = 0 : les mots sont classés selon leur spécificité au topic (exclusivité thématique) ;
+
+    λ = 0.5 : compromis entre les deux.
+
+    Modifier λ permet donc de varier le point de vue sur les topics : soit en favorisant les mots les plus fréquents, soit en mettant en avant ceux qui différencient vraiment un topic des autres.
+
+    La barre rouge indique la fréquence estimée du terme dans le topic sélectionné ; La barre bleue indique la fréquence du même terme dans l’ensemble du corpus.
+
+
+   * Problèmes et réflexions critiques.:
+
+    <!-- Le graphique à barres à droite présente les 30 termes les plus fréquents pour le topic 1. Parmi eux, on retrouve des mots comme "vin" ou "xv_France" sont très fréquents, mais rares dans les autres topics. Ces termes sont donc fortement spécifiques au Topic 1 et peuvent être considérés comme des indicateurs sémantiques clés de ce cluster.  -->
+    
+    Bien que le Topic 1 contienne plusieurs termes cohérents comme “France”, “français”, “xv_France”, qui renvoient clairement à un topic sportif, notamment le rugby (XV de France), on observe également la présence de termes d’un tout autre domaine, tels que “logement”, “propriétaire”, “prix”, qui relèvent plutôt du champ social et économique.
+
+
+    On peut donc en conclure que le Topic 1 reflète une agrégation partiellement bruitée, où la frontière entre les sujets n’est pas suffisamment nette. Cela pourrait s’expliquer par un manque de granularité dans les embeddings, un nombre de topics trop faible, ou encore un corpus où les thèmes sont souvent entremêlés.
+
 
 
     - **Corpus mars** :
