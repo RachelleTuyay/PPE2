@@ -313,6 +313,28 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
   A l'inverse, le topic 28 (prison_mikheïl_condamné) est très peu similaire au topic 67, avec un score de similarité de 0,48, ce qui est logique étant donné l'éloignement sémantique entre "prison" et "fleurs".
   Cette heatmap nous permet de voir que BERTopic a plutôt bien analysé les topics.
 
+  Regardons les topics sous forme hiérarchique.
+
+  ![image](./img/hierarchy_mars1.png)
+
+  Ici on peut voir un premier gros cluster regroupant les actualités sportives. On peut voir des sous-clusters correspondant à peu près aux différents sports : rugby, basket, football.
+
+  ![image](./img/hierarchy_mars2.png)
+
+  Ici on peut voir un autre cluster, avec un sujet politique, comprenant des sous-clusters sur les tensions entre l'Ukraine et la Russie. Au dessus on voit un autre petit cluster rattaché à un autre gros cluster, qui lui regroupe les articles traitant de l'économie et de la bourse.
+
+  Regardons les topics per class par catégories :
+
+  ![image](./img/categories_mars.png)
+
+  Si on prend les topics "politique" On voit que certains d'entre eux partagent logiquement des catégories : notamment les topics "ukraine_kiev_militaire_conflit" et "israel_israelien_hamas_gaza" qui partagent les catégories "politique", "vox monde" et "international". Tout aussi logiquement, on voit que le topic "loi_proposition_assemblee_nationale" est absent de la catégorie "international" puisque c'est un sujet national.
+
+  De la même manière, si on regarde les mêmes topics mais en triant par sources on obtient ceci :
+
+  ![image](./img/sources_mars.png)
+
+  Encore une fois on voit que le topic "loi_proposition_assemblee_nationale" est absent du flux Le Figaro - International. On voit aussi Blast ne traite pas du conflit Russie-Ukraine, mais traite uniquement du sujet "israel_israelien_hamas_gaza". A l'inverse, la source Elucid ne traite pas du sujet "israel_israelien_hamas_gaza", mais traite uniquement du conflit Russie-Ukraine. Enfin, on voit que le topic "loi_proposition_assemblee_nationale" est inclut dans des sources qui paraissent étranges : comme Le Figaro - Immobilier,  ou Le Figaro - Automobile. On peut donc se demander comment BERTopic a pu trouver ces sujets dans ces sources.
+
 
 **--------------------------------------------------------------------------**
 
@@ -323,7 +345,7 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 
   L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes (on passe de 10000 à 5000 articles). De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
 
-  De plus, le fait d'avoir exclu les articles sans catégories pour pouvoir effectuer le topics per class par catégories se fait au détriment des topics per class par sources, puisque la plupart des articles sans catégories font partie des articles France Info, Libération... on perd donc des informations pour ces sources là.
+  De plus, le fait d'avoir exclu les articles sans catégories pour pouvoir effectuer le topics per class par catégories se fait au détriment des topics per class par sources, puisque la plupart des articles sans catégories font partie des articles France Info, Libération... on perd donc des informations pour ces sources là. On se retrouve avec en majorité des articles venant du Figaro.
 
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
