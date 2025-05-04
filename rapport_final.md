@@ -159,9 +159,13 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
     * La visualisation des topics nous permet de voir la distance intertopic : c'est-à-dire la distance qui sépare chaque topic les uns des autres. Ces topics sont représentés par des cercles plus ou moins proches entre eux. Plus ils sont proches, plus leur score de similarité est grand.
 
-    * La visualisation hiérarchique des topics
+    * La visualisation hiérarchique des topics se présente sous forme d'un arbre, où chaque noeud représente un topic "représentatif". Les branches qui partent de ce noeud correspondent alors à des topics plus spécifiques de ce même sujet. Ainsi avec cette visualisation on peut voir des groupes de topic : par exemple, un noeud d'où partent tous les topics de type actualité sportive.
 
+    * La visualisation de tous les documents (embeddings) affiche tous les documents, avec en légende tous les topics. Les documents sont colorés en fonction de leur topic. On peut aussi voir la distance entre chaque document selon la similarité de leur topic. On a ainsi des clusters avec tous les documents de même topic.
 
+    * La visualisation de la heatmap permet de montrer la similarité entre deux topics. Cette heatmap est sous forme de grille avec sur l'axe x et y les topics. La diagonale représente l'endroit où un topic se recoupe avec lui-même, donc à cet endroit la similarité est de 1 : le maximum. Plus deux topics sont similaires, plus leur score de similarité est grand et par conséquent plus le bleu est intense sur la heatmap.
+
+    * La visualisation des topics par classe permet de regrouper les topics selon des classes que l'on définit. Nous avons décidé d'effectuer deux fois cette visualisation : une fois en prenant les catégories des articles comme classes, et une autre fois en prenant les sources des articles comme classes. Cela nous permet de voir la répartition des topics selon les catégories ou les sources des articles.
 
   * Propositions d'améliorations futures :
     * interface web ...
@@ -289,6 +293,13 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
   Pour le corpus de mars, nous avons 142 topics avec BERTopic.
 
+  Voici les clusters pour les topics de mars :
+
+  ![image](./img/topics_mars.png)
+
+  Le cluster le plus en bas représente les articles sportifs, tandis que le cluster au centre du carré en haut à droite représente les articles culturels, artistiques. On voit que ces clusters regroupent beaucoup de topics. Nous avons aussi des clusters un peu moins denses, comme celui le plus en haut, qui regroupe deux topics parlant de jardinage et de plantes.
+  Il y a aussi des topics qui sont regroupés ensemble mais qui ne devraient pas l'être : le cluster tout à gauche regroupe des articles sur des intempéries ainsi que sur des défilés.
+
   Voici un aperçu en zoomant à un endroit de la heatmap :
 
   ![image](./img/heatmap_zoom_mars.png)
@@ -306,6 +317,8 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   * Problèmes et réflexions critiques :
 
   L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes (on passe de 10000 à 5000 articles). De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
+
+  De plus, le fait d'avoir exclu les articles sans catégories pour pouvoir effectuer le topics per class par catégories se fait au détriment des topics per class par sources, puisque la plupart des articles sans catégories font partie des articles France Info, Libération... on perd donc des informations pour ces sources là.
 >
 
 * **Comparaison critique des modèles (LDA vs BERTopic)** :
