@@ -6,11 +6,11 @@ Ce projet vise à extraire, enrichir et analyser automatiquement des articles is
 
 Ce rapport présente les étapes clés du projet, les choix techniques effectués, ainsi que les résultats obtenues et leurs limites.
 
-Voilà un graphe simple qui représente la vue d'ensemble du projet :
+> Voilà un graphe simple qui représente la vue d'ensemble du projet :
 
 ![graph](img/image.png)
 
-(source : diapo "07-topics-modeling1.pdf")
+  *(source : diapo "07-topics-modeling1.pdf")*
 
 
 ---
@@ -124,10 +124,64 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
       python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json
       ```
 
-  On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient environ 10000 articles au total.
+  On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient envrion 10000 articles au total.
 
 ---
+<<<<<<< Updated upstream
+=======
+
+### {- BàO 3 – Analyse -}
+
+* **Modélisation thématique avec LDA** :
+
+  * Script : `run_lda.py`
+  * Outils : Gensim ...
+  * Prétraitement : stopwords, vectorisation.
+  * Analyse des résultats :
+    - Corpus février :
+
+
+    - Corpus mars :
+
+   Analysons les résultats que nous avons obtenu avec le script LDA. Nous avons choisi de garder les dix topics les plus fréquents pour les deux sous-corpus.
+
+  Voici notre visualisation LDA pour le corpus de mars :
+  ![image](./img/visu_lda_mars.png)
+
+  Nous voyons ici les différents topics, et la distance qu'il y a entre chacun d'entre eux. Nous voyons sur l'image le topic 4, qui semble représenter un sujet sportif comme on peut le voir avec les termes "ligue_champion", "PSG", "Tennis", etc. Nous avons le terme "marine_pen" qui semble être une valeur aberrante. On observe que certains termes sont plus spécifiques que d'autres : par exemple "ligue_champion" est plus spécifique que "dimanche" car on voit que pour le premier terme, la fréquence du terme au sein du topic est quasi la même que la fréquence total tout topic confondu, contrairement à "dimanche" dont la fréquence relative au topic est égale à moins de la moitié de la fréquence total du terme.
+
+  ![image](./img/visu_lda_mars_02.png)
+
+  Dans cette image, on voit le topic 1. Même en mettant lambda à 0 pour essayer d'avoir les termes les plus spécifiques, il est difficile de dégager un thème dans ce topic. Il a l'air d'être lié à la culture et l'art, mais on a des mots comme "médical" qui sont surprenants.
+
+  Voici le fichier texte comprenant les dix premiers topics : [fichier txt](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_lda_mars.txt?ref_type=heads)
+
+  On remarque que la plupart des topics sont de nature politique.
+
+  * Problèmes et réflexions critiques.
+
+* **Modélisation thématique avec BERTopic** :
+  * Script : `bertopicdemo.py`
+  * Outils : Gensim ...
+  * Prétraitement : stopwords, vectorisation.
+  * Modèle Hugginface : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  * Analyse des résultats :
+    - Corpus février :
+    - Corpus mars :
+  * Problèmes et réflexions critiques.
+
+  L'un des problèmes que nous avons rencontré est que certains articles n'ont pas de catégories. Pour pouvoir faire les topics per class en utilisant les catégories comme classes, nous sommes donc obligés de les retirer de l'analyse ce qui est dommage car cela enlève des données qui auraient pu intéressantes. De plus, à l'inverse, certains articles ont plusieurs catégories : or, BERTopic a besoin que chaque article soit associé à une classe. Lorsqu'un article a plusieurs catégories, nous avions essayé de séparer ces catégories afin que la liste de catégories finale `[['Economie', 'Immigration', 'Social'], 'Economie', 'Culture']` devienne `['Economie', 'Immigration', 'Social', 'Culture']`. Malheureusement cela fait que le nombre de classes n'est plus cohérent avec le nombre total d'articles et cela entraîne une erreur lors de l'exécution du script. On a donc été obligé de garder les combinaisons de catégories ensemble mais en les sortant de leur liste car BERTopic ne peut pas gérer une classe qui soit une liste. On a donc `['Economie Immigration Social', 'Economie', 'Culture']`.
+
+  On peut aussi remarquer que
+
+* **Comparaison critique des modèles (LDA vs BERTopic)** :
+  * Lisibilité, cohérence, qualité des thèmes.
+  * Sur- ou sous-représentation de certains sujets.
+  * Réflexion sur l’impact du prétraitement.
+
+>>>>>>> Stashed changes
 ---
+
 
 ### {- BàO 3 – Visualisation -}
 
@@ -145,20 +199,19 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
     * [Visualisation hiérarchique des topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/hierarchical_topics_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
     * [Visualisation de tous les documents et leur topic](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_embeddings_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
     * [Visualisation de la heatmap des similarités entre topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_heatmap_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
+
+    Voici un aperçu de l’analyse de hierarchical clustering sur les topics du corpus de février:
+
+  ![image](./img/Hierarchical-Clustering-fevr.png)
+    Ce dendrogramme nous permet de visualiser les similarités sémantiques entre les différents topics extraits par BERTopic. Chaque ligne horizontale correspond à un topic identifié par un numéro et des mots-clés représentatifs. Les points de jonction (nœuds noirs) indiquent le regroupement de deux topics en un cluster plus large. 
+    
+    En survolant ces nœuds, on peut voir apparaître un nom de regroupement généré automatiquement, ce qui permet d’interpréter rapidement le thème global du cluster. Par exemple, les topics `66_alpes_edgar_grospiron` et `38_ski_2030_olympique` sont regroupés très tôt avec l’étiquette `2030_alpes_jo_comité_ski`, suggérant une forte proximité lexicale autour des Jeux Olympiques d’hiver. 
+    
+    Ce type de visualisation aide donc à mieux comprendre la structure hiérarchique des sujets traités dans le corpus, à identifier les thèmes centraux (branches courtes) ainsi que les sujets plus marginaux ou spécifiques (branches longues). 
+
     * [Visualisation des topics par classe de corpus février selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_categories_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
     * [Visualisation des topics par classe de corpus février selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_sources_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
 
----
-
-### {- BàO 4 – Visualisation -}
-
-* **Visualisations** :
-  * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`.
-  * Mise en forme des sorties pour l'interprétation.
-  * Liens vers les fichiers HTML de visualisation.
-* **Rédaction du rapport** :
-  - Corpus février :
-    * Résultats obtenus, limites et pertinence des outils utilisés.
     * Propositions d'améliorations futures :
       * interface web ...
       * clustering supervisé ...
@@ -172,14 +225,29 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
     * [Visualisation hiérarchique des topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/hierarchical_topics_corpus_mars_analyzed.html?ref_type=heads)
     * [Visualisation de tous les documents et leur topic](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_embeddings_corpus_mars_analyzed.html?ref_type=heads)
     * [Visualisation de la heatmap des similarités entre topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_heatmap_corpus_mars_analyzed.html?ref_type=heads)
-    * [Visualisation des topics par classe selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_categories_corpus_mars_analyzed.html?ref_type=heads)
-    * [Visualisation des topics par classe selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
+
+    Voici un aperçu en zoomant à un endroit de la heatmap :
+
+  ![image](./img/heatmap_zoom_mars.png)
+
+  Cette heatmap permet de visualiser la similarité entre les topics : plus le bleu est foncé, plus les topics sont similaires. La diagonale de la heatmap a la valeur maximale car elle correspond à l'endroit où le topic est associé à lui-même, donc la similarité est évidemment de 1 dans ce cas.
+
+  Dans la capture d'écran, on voit que les topics 67 (fleurs_planter_lavande) et 34 (jardin_comment_plantes) sont notés comme étant très similaires avec un score de 0,90, très proche de 1. On peut facilement voir pourquoi, vu la présence de "plante" dans les deux topics, ainsi que des mots proches sémantiquement : fleurs, jardin et lavande.
+
+  A l'inverse, le topic 28 (prison_mikheïl_condamné) est très peu similaire au topic 67, avec un score de similarité de 0,48, ce qui est logique étant donné l'éloignement sémantique entre "prison" et "fleurs".
+  Cette heatmap nous permet de voir que BERTopic a plutôt bien analysé les topics.
+
+  * [Visualisation des topics par classe de corpus mars selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_categories_corpus_mars_analyzed.html?ref_type=heads)
+  * [Visualisation des topics par classe de corpus mars selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
 
 
-  * Propositions d'améliorations futures :
-    * interface web ...
-    * clustering supervisé ...
-    * suivi temporel des thèmes ...
+* **Comparaison entre les deux sous-corpus** :
+
+
+* Propositions d'améliorations futures :
+  * interface web ...
+  * clustering supervisé ...
+  * suivi temporel des thèmes ...
 
 
 ---
@@ -262,31 +330,8 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
     - **Corpus février** :
 
-  Voici un aperçu de l’analyse de hierarchical clustering sur les topics du corpus de février:
-
-  ![image](./img/Hierarchical-Clustering-fevr.png)
-    Ce dendrogramme nous permet de visualiser les similarités sémantiques entre les différents topics extraits par BERTopic. Chaque ligne horizontale correspond à un topic identifié par un numéro et des mots-clés représentatifs. Les points de jonction (nœuds noirs) indiquent le regroupement de deux topics en un cluster plus large. 
-    
-    En survolant ces nœuds, on peut voir apparaître un nom de regroupement généré automatiquement, ce qui permet d’interpréter rapidement le thème global du cluster. Par exemple, les topics `66_alpes_edgar_grospiron` et `38_ski_2030_olympique` sont regroupés très tôt avec l’étiquette `2030_alpes_jo_comité_ski`, suggérant une forte proximité lexicale autour des Jeux Olympiques d’hiver. 
-    
-    Ce type de visualisation aide donc à mieux comprendre la structure hiérarchique des sujets traités dans le corpus, à identifier les thèmes centraux (branches courtes) ainsi que les sujets plus marginaux ou spécifiques (branches longues). 
-
 
     - **Corpus mars** :
-
-  Voici un aperçu en zoomant à un endroit de la heatmap :
-
-  ![image](./img/heatmap_zoom_mars.png)
-
-  Cette heatmap permet de visualiser la similarité entre les topics : plus le bleu est foncé, plus les topics sont similaires. La diagonale de la heatmap a la valeur maximale car elle correspond à l'endroit où le topic est associé à lui-même, donc la similarité est évidemment de 1 dans ce cas.
-
-  Dans la capture d'écran, on voit que les topics 67 (fleurs_planter_lavande) et 34 (jardin_comment_plantes) sont notés comme étant très similaires avec un score de 0,90, très proche de 1. On peut facilement voir pourquoi, vu la présence de "plante" dans les deux topics, ainsi que des mots proches sémantiquement : fleurs, jardin et lavande.
-
-  A l'inverse, le topic 28 (prison_mikheïl_condamné) est très peu similaire au topic 67, avec un score de similarité de 0,48, ce qui est logique étant donné l'éloignement sémantique entre "prison" et "fleurs".
-  Cette heatmap nous permet de voir que BERTopic a plutôt bien analysé les topics.
-
-  - **Comparaison entre les deux sous-corpus** :
-
 
   * Problèmes et réflexions critiques :
 
@@ -310,5 +355,6 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 * Extraits de code avec commentaires (liens GitLab).
 * Graphique Git des contributions.
 * Fichier `requirements.txt` avec les bibliothèques utilisées.
+
 
 
