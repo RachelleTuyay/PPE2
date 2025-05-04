@@ -390,13 +390,15 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 
 ## {+ Conclusion +} :
 
----
+Cette analyse a permis de mieux comprendre la manière dont des méthodes de modélisation thématique peuvent aider à structurer et interpréter de grands volumes de textes. En s’appuyant sur deux approches différentes – LDA et BERTopic – nous avons pu explorer la richesse des sujets présents dans les corpus étudiés, ainsi que la façon dont ces sujets s’organisent entre eux.
 
-## Annexes
+Globalement, les résultats mettent en évidence que la diversité des contenus, leur complexité et leur structuration évoluent d’un corpus à l’autre. Certains thèmes ressortent clairement, comme le sport, la culture ou encore la politique, tandis que d’autres apparaissent plus diffus, parfois mélangés à des sujets proches. Cette variation reflète à la fois la nature du contenu médiatique analysé et les limites des outils employés pour en extraire des thématiques cohérentes.
 
-* Extraits de code avec commentaires (liens GitLab).
-* Graphique Git des contributions.
-* Fichier `requirements.txt` avec les bibliothèques utilisées.
+Les méthodes de topic modeling constituent un outil utile pour résumer l’information, identifier des tendances et explorer efficacement de larges ensembles de textes. Néanmoins, leur utilisation demande une attention particulière quant aux paramètres choisis, à la qualité des données analysées et aux objectifs visés. Chaque approche présente ses avantages : certaines privilégient une vision globale, alors que d'autres permettent une analyse plus détaillée et nuancée des contenus.
+
+Cette exploration montre que l’automatisation de l’analyse thématique reste pertinentee pour mieux comprendre les grandes lignes d’un corpus textuel, à condition de bien en maîtriser les outils et les limites.
+
+
 
 
 
