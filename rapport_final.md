@@ -148,22 +148,6 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
     * [Visualisation des topics par classe de corpus février selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_categories_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
     * [Visualisation des topics par classe de corpus février selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_f%C3%A9vrier/topics_per_class_sources_corpus_f%C3%A9vrier_analyzed.html?ref_type=heads)
 
----
-
-### {- BàO 4 – Visualisation -}
-
-* **Visualisations** :
-  * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`.
-  * Mise en forme des sorties pour l'interprétation.
-  * Liens vers les fichiers HTML de visualisation.
-* **Rédaction du rapport** :
-  - Corpus février :
-    * Résultats obtenus, limites et pertinence des outils utilisés.
-    * Propositions d'améliorations futures :
-      * interface web ...
-      * clustering supervisé ...
-      * suivi temporel des thèmes ...
-
   - **Corpus mars** :
     * Résultats obtenus, limites et pertinence des outils utilisés.
 
@@ -174,7 +158,6 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
     * [Visualisation de la heatmap des similarités entre topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_heatmap_corpus_mars_analyzed.html?ref_type=heads)
     * [Visualisation des topics par classe selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_categories_corpus_mars_analyzed.html?ref_type=heads)
     * [Visualisation des topics par classe selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
-
 
   * Propositions d'améliorations futures :
     * interface web ...
