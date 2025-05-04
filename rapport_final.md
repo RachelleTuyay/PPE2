@@ -116,13 +116,9 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
   Pour ce projet, le corpus original intitulé `Corpus au 2 avril 2025`. Nous avons décidé de le filtrer en fonction des dates, en conservant que les mois de février et de mars. Ce filtrage nous a semblé pertinent pour analyser l'évolution des thématiques au fil du temps. Ce découpage permet de comparer les dynamiques informationnelles selon les périodes, de repérer des intérêts autour de certains sujets, ou encore de limiter les effets de surreprésentation de thèmes liés à des événements ponctuels. Il renforce ainsi la pertinence de l’analyse thématique en contextualisant les résultats dans une chronologie cohérente.
 
-  >Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
-      ```
-      python3 rss_parcours.py 2025/ glob etree --start-date 2025-02-01 --end-date 2025-02-28 --output corpus02.json
-      ```
-      ```
-      python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json
-      ```
+  Voici un exemple de commandes utilisées pour obtenir les sous-corpus :
+  >   ```python3 rss_parcours.py 2025/ glob etree --start-date 2025-02-01 --end-date 2025-02-28 --output corpus02.json```
+      ```python3 rss_parcours.py 2025/ glob etree --start-date 2025-03-01 --end-date 2025-03-31 --output corpus_mars.json```
 
   On a donc 2 sous-corpus : `sous-corpus_février` et `sous-corpus_mars`. On obtient environ 10000 articles au total.
 
@@ -132,7 +128,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 ### {- BàO 3 – Visualisation -}
 
 * **Visualisations** :
-  * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`.
+  * `visualize_topics()`, `visualize_topics_per_class()`, `visualize_hierarchy()`, `visualize_heatmap()`, `visualize_documents()`
   * Mise en forme des sorties pour l'interprétation.
   * Liens vers les fichiers HTML de visualisation.
 
@@ -158,6 +154,14 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
     * [Visualisation de la heatmap des similarités entre topics](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_heatmap_corpus_mars_analyzed.html?ref_type=heads)
     * [Visualisation des topics par classe selon les catégories](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_categories_corpus_mars_analyzed.html?ref_type=heads)
     * [Visualisation des topics par classe selon les sources](https://gitlab.com/plurital-ppe2-2025/groupe11/Projet/-/blob/main/sous-corpus_mars/topics_per_class_sources_corpus_mars_analyzed.html?ref_type=heads)
+
+- **Explication des visualisations** :
+
+    * La visualisation des topics nous permet de voir la distance intertopic : c'est-à-dire la distance qui sépare chaque topic les uns des autres. Ces topics sont représentés par des cercles plus ou moins proches entre eux. Plus ils sont proches, plus leur score de similarité est grand.
+
+    * La visualisation hiérarchique des topics
+
+
 
   * Propositions d'améliorations futures :
     * interface web ...
@@ -202,7 +206,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
    * Problèmes et réflexions critiques.:
 
-    <!-- Le graphique à barres à droite présente les 30 termes les plus fréquents pour le topic 1. Parmi eux, on retrouve des mots comme "vin" ou "xv_France" sont très fréquents, mais rares dans les autres topics. Ces termes sont donc fortement spécifiques au Topic 1 et peuvent être considérés comme des indicateurs sémantiques clés de ce cluster.  -->
+    Le graphique à barres à droite présente les 30 termes les plus fréquents pour le topic 1. Parmi eux, on retrouve des mots comme "vin" ou "xv_France" sont très fréquents, mais rares dans les autres topics. Ces termes sont donc fortement spécifiques au Topic 1 et peuvent être considérés comme des indicateurs sémantiques clés de ce cluster.
     
     Bien que le Topic 1 contienne plusieurs termes cohérents comme “France”, “français”, “xv_France”, qui renvoient clairement à un topic sportif, notamment le rugby (XV de France), on observe également la présence de termes d’un tout autre domaine, tels que “logement”, “propriétaire”, “prix”, qui relèvent plutôt du champ social et économique.
 
@@ -229,6 +233,32 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
   On remarque que la plupart des topics sont de nature politique.
 
   * Problèmes et réflexions critiques.
+
+  La cohérence des topics laisse à désirer, comme on peut le voir pour ce topic :
+  ``` ([(0.04971674, 'mardi_mars'),
+   (0.032919217, 'Ligue_champion'),
+   (0.024989448, 'Ligue'),
+   (0.023180215, 'mardi'),
+   (0.021951461, 'Indian_Wells'),
+   (0.02061948, 'huitième_finale'),
+   (0.01889684, 'finale'),
+   (0.018644499, 'champion'),
+   (0.016960604, 'quart_finale'),
+   (0.013903567, 'face'),
+   (0.012283185, 'match'),
+   (0.011748097, 'Tennis'),
+   (0.011277011, 'aller'),
+   (0.011032933, 'PSG'),
+   (0.010640536, 'quart'),
+   (0.01043116, 'Volodymyr_Zelensky'),
+   (0.010086553, 'huitième'),
+   (0.009983057, 'maison_Blanche'),
+   (0.009931014, 'premier'),
+   (0.008338351, 'retour')],
+   ```
+
+  On pense au début avoir affaire à un topic de type sportif, avec des mots comme "ligue_champion", "finale", "match", mais à la fin on a des mots comme "maison_blanche" et "Volodymyr_Zelensky".
+  On aussi la présence de mots comme "mardi_mars", "lundi" etc, qui n'apportent pas vraiment à l'analyse du topic et qu'on aurait pu filtrer en amont.
 >
 
 **--------------------------------------------------------------------------**
@@ -256,6 +286,8 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 
 
     - **Corpus mars** :
+
+  Pour le corpus de mars, nous avons 142 topics avec BERTopic.
 
   Voici un aperçu en zoomant à un endroit de la heatmap :
 
