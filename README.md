@@ -1,6 +1,5 @@
-# Rapport Final
 
-Projet réalisé par :
+## Projet PPE2 (Programmation et Projet encadré 2) réalisé par :
 
 **Rachelle TUYAY**, **Xiaotong HE** et **Maïwenn PLEVENAGE**
 
