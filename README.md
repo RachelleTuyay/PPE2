@@ -4,7 +4,7 @@ Projet réalisé par :
 
 **Rachelle TUYAY**, **Xiaotong HE** et **Maïwenn PLEVENAGE**
 
-## {+ Introduction +} :
+## Introduction :
 
 Ce projet vise à extraire, enrichir et analyser automatiquement des articles issus de flux RSS journalistiques de 2025. En combinant les outils de traitement du langage naturel (comme Trankit, Gensim, BERTopic et encore d'autres) et des méthodes de modélisations thématiques.
 
@@ -20,7 +20,7 @@ Voilà un graphe simple qui représente la vue d'ensemble du projet :
 ---
 ---
 
-### {- BàO 1 – gestion des données et du code -}
+### BàO 1 – gestion des données et du code
 
 * **Contexte du projet** : Extraction et modélisation thématique de données issues de flux RSS journalistiques.
 
@@ -43,7 +43,7 @@ Chaque personne a dû écrire une partie différente du programme à partir de l
 ---
 ---
 
-### {- BàO 2 – enrichir les données -}
+### BàO 2 – enrichir les données
 
 La seconde étape est d'enrichir les données avec les sorties de différents analyseurs morphosyntaxiques : `SpaCy`, `Stanza` et `Trankit`. Ces outils permettent d’extraire des informations linguistiques telles que les lemmes, les catégories grammaticales, etc. Ces résultats permettent de construire une représentation plus solide et précise des structures linguistiques contenues dans les données.
 
@@ -127,7 +127,7 @@ La seconde étape est d'enrichir les données avec les sorties de différents an
 ---
 ---
 
-### {- BàO 3 – Visualisation -}
+### BàO 3 – Visualisation
 
 L’étape suivante consiste à explorer le topic modeling, une méthode qui permet d’identifier automatiquement les grandes thématiques présentes dans un corpus de documents. Dans le cadre de ce projet, nous avons utilisé deux modèles de topic modeling : LDA (*Latent Dirichlet Allocation*) et BERTopic.
 
@@ -177,7 +177,7 @@ BERTopic peut être considéré comme une séquence d'étapes pour créer ses re
 ---
 ---
 
-### {- BàO 4 – Analyse -}
+### BàO 4 – Analyse
 
 Dans cette section, nous analysons plusieurs corpus afin d’en dégager les grandes thématiques, les différences lexicales et les spécificités de chacun. Grâce à des méthodes d’analyse automatique, notamment le topic modeling, nous identifions les sujets les plus fréquents et comparons leur répartition entre les différents corpus. Cette approche permet de mieux comprendre le contenu de chaque ensemble de textes, tout en mettant en lumière les points communs et les différences qui les caractérisent.
 
@@ -391,7 +391,7 @@ Dans cette section, nous analysons plusieurs corpus afin d’en dégager les gra
 ---
 ---
 
-## {+ Conclusion +} :
+## Conclusion :
 
 Cette analyse nous a permis de mieux comprendre la manière dont des méthodes de modélisation thématique peuvent aider à structurer et interpréter de grands volumes de textes. En s’appuyant sur deux approches différentes – LDA et BERTopic – nous avons pu explorer la richesse des sujets présents dans les corpus étudiés, ainsi que la façon dont ces sujets s’organisent entre eux.
 
